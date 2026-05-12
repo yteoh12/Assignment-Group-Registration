@@ -1,0 +1,523 @@
+
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans);color:var(--color-text-primary);background:transparent;font-size:14px;line-height:1.6}
+.hdr{display:flex;align-items:center;gap:10px;padding:.875rem 0 .75rem;border-bottom:.5px solid var(--color-border-tertiary);margin-bottom:1rem}
+.hdr-icon{width:30px;height:30px;border-radius:var(--border-radius-md);background:#0078d4;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.hdr-icon i{color:#fff;font-size:16px}
+.hdr-title{font-size:15px;font-weight:500}
+.hdr-sub{font-size:12px;color:var(--color-text-secondary);margin-left:auto;display:flex;align-items:center;gap:5px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:1rem}
+.stat{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:9px 12px;text-align:center}
+.stat .v{font-size:20px;font-weight:500;line-height:1.2}
+.stat .l{font-size:11px;color:var(--color-text-secondary);margin-top:1px}
+.tabs{display:flex;gap:3px;background:var(--color-background-secondary);border:.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:3px;margin-bottom:1rem}
+.tab{flex:1;padding:6px 8px;font-size:13px;font-weight:500;cursor:pointer;background:none;border:none;border-radius:var(--border-radius-md);color:var(--color-text-secondary);transition:all .15s;display:flex;align-items:center;justify-content:center;gap:4px;font-family:var(--font-sans)}
+.tab:hover{color:var(--color-text-primary);background:rgba(0,0,0,.04)}
+.tab.active{background:var(--color-background-primary);color:var(--color-text-primary);box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.tab i{font-size:14px}
+.sec{display:none}.sec.on{display:block}
+.frow{display:flex;gap:8px;margin-bottom:.875rem;flex-wrap:wrap}
+.frow input{flex:1;min-width:150px}
+.frow select{width:130px}
+.frow button{white-space:nowrap}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:10px}
+.card{background:var(--color-background-primary);border:.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:.875rem;display:flex;flex-direction:column;transition:border-color .15s}
+.card:hover{border-color:var(--color-border-secondary)}
+.card.mine{border:1px solid #0078d4}
+.card.full{opacity:.6}
+.ctop{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px}
+.cname{font-size:14px;font-weight:500}
+.badge{display:inline-flex;align-items:center;padding:2px 7px;border-radius:20px;font-size:11px;font-weight:500;border:.5px solid;white-space:nowrap}
+.b-open{background:#E1F5EE;color:#085041;border-color:#5DCAA5}
+.b-full{background:#FCEBEB;color:#791F1F;border-color:#F09595}
+.b-me{background:#E6F1FB;color:#0C447C;border-color:#85B7EB}
+.b-ldr{background:#FAEEDA;color:#633806;border-color:#EF9F27}
+.slots{display:flex;gap:3px;margin:5px 0 8px}
+.slot{height:4px;border-radius:2px;flex:1;background:var(--color-border-secondary)}
+.slot.on{background:#0078d4}
+.slbl{font-size:11px;color:var(--color-text-secondary);margin-bottom:3px}
+.mlist{margin-bottom:8px}
+.mrow{display:flex;align-items:center;gap:7px;padding:4px 0;border-bottom:.5px solid var(--color-border-tertiary);font-size:12px}
+.mrow:last-child{border-bottom:none}
+.av{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;flex-shrink:0}
+.av0{background:#E1F5EE;color:#085041}.av1{background:#E6F1FB;color:#0C447C}.av2{background:#FAEEDA;color:#633806}.av3{background:#FCEBEB;color:#791F1F}.av4{background:#EEEDFE;color:#3C3489}.av5{background:#FBEAF0;color:#72243E}.av6{background:#EAF3DE;color:#27500A}
+.mn{font-weight:500;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mid{font-size:11px;color:var(--color-text-secondary)}
+.meta{font-size:11px;color:var(--color-text-secondary);margin-bottom:6px}
+.alert{padding:8px 12px;border-radius:var(--border-radius-md);font-size:13px;margin-bottom:.875rem;display:flex;align-items:center;gap:6px;border:.5px solid}
+.a-ok{background:#E1F5EE;color:#085041;border-color:#5DCAA5}
+.a-err{background:#FCEBEB;color:#791F1F;border-color:#F09595}
+.a-inf{background:#E6F1FB;color:#0C447C;border-color:#85B7EB}
+.a-wrn{background:#FAEEDA;color:#633806;border-color:#EF9F27}
+.fcard{background:var(--color-background-primary);border:.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1.25rem;max-width:520px;margin:0 auto}
+.fcard h2{font-size:17px;font-weight:500;margin-bottom:2px}
+.fsub{font-size:12px;color:var(--color-text-secondary);margin-bottom:1rem}
+.fg{margin-bottom:.75rem}
+.fg label{display:block;font-size:12px;font-weight:500;color:var(--color-text-secondary);margin-bottom:3px}
+.fr2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.sec-lbl{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.7px;color:var(--color-text-secondary);margin-bottom:.75rem}
+hr.div{border:none;border-top:.5px solid var(--color-border-tertiary);margin:.875rem 0}
+.steps{display:flex;gap:5px;margin-bottom:1rem}
+.sd{width:8px;height:8px;border-radius:50%;background:var(--color-border-secondary);transition:background .2s}
+.sd.act{background:#0078d4}.sd.done{background:#1D9E75}
+.review{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:10px 12px;margin-bottom:1rem;font-size:13px}
+.rr{display:flex;gap:8px;padding:3px 0;border-bottom:.5px solid var(--color-border-tertiary);font-size:12px}
+.rr:last-child{border-bottom:none}
+.rk{color:var(--color-text-secondary);min-width:90px;flex-shrink:0}
+.rv{font-weight:500}
+.mcard{background:var(--color-background-primary);border:.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1.25rem;max-width:520px;margin:0 auto}
+.empty{text-align:center;padding:2.5rem 1rem;color:var(--color-text-secondary);grid-column:1/-1}
+.empty i{font-size:36px;opacity:.3;display:block;margin:0 auto 8px}
+.spin{display:inline-block;width:14px;height:14px;border:2px solid var(--color-border-secondary);border-top-color:#0078d4;border-radius:50%;animation:sp .7s linear infinite;vertical-align:-2px;margin-right:3px}
+@keyframes sp{to{transform:rotate(360deg)}}
+.modal-wrap{display:none;min-height:320px;background:rgba(0,0,0,.42);border-radius:var(--border-radius-lg);align-items:center;justify-content:center;padding:1rem;margin-top:.5rem}
+.modal-wrap.open{display:flex}
+.modal{background:var(--color-background-primary);border-radius:var(--border-radius-lg);padding:1.25rem;max-width:390px;width:100%}
+.modal h3{font-size:16px;font-weight:500;margin-bottom:2px}
+.msub{font-size:12px;color:var(--color-text-secondary);margin-bottom:1rem}
+.macts{display:flex;gap:8px;justify-content:flex-end;margin-top:1rem}
+</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"/>
+<h2 class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)">Assignment group registration — Sunway</h2>
+
+<div class="hdr">
+  <div class="hdr-icon"><i class="ti ti-clipboard-list" aria-hidden="true"></i></div>
+  <div>
+    <div class="hdr-title">Assignment Group Registration</div>
+    <div style="font-size:11px;color:var(--color-text-secondary)">Sunway University</div>
+  </div>
+  <div class="hdr-sub" id="sync-lbl"><span class="spin"></span>Loading…</div>
+</div>
+
+<div id="alert-box"></div>
+
+<div class="stats">
+  <div class="stat"><div class="v" id="s-total">—</div><div class="l">Groups</div></div>
+  <div class="stat"><div class="v" id="s-open">—</div><div class="l">Open</div></div>
+  <div class="stat"><div class="v" id="s-members">—</div><div class="l">Members</div></div>
+  <div class="stat"><div class="v" id="s-spots">—</div><div class="l">Spots left</div></div>
+</div>
+
+<div class="tabs">
+  <button class="tab active" onclick="goTab('browse',this)"><i class="ti ti-layout-grid" aria-hidden="true"></i><span>Browse</span></button>
+  <button class="tab" onclick="goTab('register',this)"><i class="ti ti-forms" aria-hidden="true"></i><span>Register</span></button>
+  <button class="tab" onclick="goTab('my',this)"><i class="ti ti-user-circle" aria-hidden="true"></i><span>My group</span></button>
+  <button class="tab" onclick="goTab('sheet',this)"><i class="ti ti-table" aria-hidden="true"></i><span>All responses</span></button>
+</div>
+
+<div id="tab-browse" class="sec on">
+  <div class="frow">
+    <input type="text" id="srch" placeholder="Search groups or members…" oninput="renderGroups()"/>
+    <select id="flt" onchange="renderGroups()"><option value="all">All</option><option value="open">Open</option><option value="full">Full</option></select>
+    <button onclick="loadData(true)"><i class="ti ti-refresh" aria-hidden="true"></i></button>
+  </div>
+  <div class="grid" id="grids"><div class="empty"><i class="ti ti-loader-2" aria-hidden="true"></i><p>Loading…</p></div></div>
+</div>
+
+<div id="tab-register" class="sec">
+  <div class="fcard">
+    <div style="display:flex;align-items:center;gap:7px;margin-bottom:3px">
+      <i class="ti ti-brand-windows" style="font-size:18px;color:#0078d4" aria-hidden="true"></i>
+      <h2 style="margin:0">Group registration form</h2>
+    </div>
+    <p class="fsub">Submit your details to create or join a group.</p>
+    <div class="steps" id="step-dots">
+      <div class="sd act"></div><div class="sd"></div><div class="sd"></div>
+    </div>
+
+    <div id="step1">
+      <div class="sec-lbl">Section 1 of 3 — Your details</div>
+      <div class="fg"><label>Full name *</label><input type="text" id="cr-name" placeholder="e.g. Teoh Yun Xin"/></div>
+      <div class="fr2">
+        <div class="fg"><label>Student ID *</label><input type="text" id="cr-id" placeholder="e.g. 22000000"/></div>
+        <div class="fg"><label>Email *</label><input type="email" id="cr-email" placeholder="e.g. yunxint@sunway.edu.my"/></div>
+      </div>
+      <div style="display:flex;justify-content:flex-end"><button onclick="goStep(2)">Next <i class="ti ti-arrow-right" aria-hidden="true"></i></button></div>
+    </div>
+
+    <div id="step2" style="display:none">
+      <div class="sec-lbl">Section 2 of 3 — Action</div>
+      <div class="fg"><label>What would you like to do? *</label>
+        <select id="cr-action" onchange="toggleAction()">
+          <option value="join">Join an existing group</option>
+          <option value="create">Create a new group</option>
+        </select>
+      </div>
+      <div id="join-fields">
+        <div class="fg"><label>Select group *</label>
+          <select id="join-sel"><option value="">— Select —</option></select>
+        </div>
+      </div>
+      <div id="create-fields" style="display:none">
+        <div class="fg"><label>Group name *</label><input type="text" id="gr-name" placeholder="e.g. Team Alpha"/></div>
+        <div class="fg"><label>Max members</label>
+          <select id="gr-max"><option value="6" selected>6 members</option><option value="5">5 members</option><option value="7">7 members</option></select>
+        </div>
+      </div>
+      <div style="display:flex;justify-content:space-between;margin-top:4px">
+        <button onclick="goStep(1)"><i class="ti ti-arrow-left" aria-hidden="true"></i> Back</button>
+        <button onclick="goStep(3)">Next <i class="ti ti-arrow-right" aria-hidden="true"></i></button>
+      </div>
+    </div>
+
+    <div id="step3" style="display:none">
+      <div class="sec-lbl">Section 3 of 3 — Review &amp; submit</div>
+      <div class="review" id="review-box"></div>
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <button onclick="goStep(2)"><i class="ti ti-arrow-left" aria-hidden="true"></i> Back</button>
+        <button id="sub-btn" onclick="submitForm()"><i class="ti ti-send" aria-hidden="true"></i> Submit response</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="tab-my" class="sec"><div id="my-content"></div></div>
+
+<div id="tab-sheet" class="sec">
+  <div style="max-width:680px;margin:0 auto">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.875rem">
+      <div>
+        <div style="font-size:14px;font-weight:500">All responses</div>
+        <div style="font-size:12px;color:var(--color-text-secondary)" id="resp-lbl"></div>
+      </div>
+      <button onclick="loadData(true)"><i class="ti ti-refresh" aria-hidden="true"></i> Refresh</button>
+    </div>
+    <div id="sheet-tbl" style="overflow-x:auto"></div>
+  </div>
+</div>
+
+<div class="modal-wrap" id="del-wrap">
+  <div class="modal">
+    <h3>Delete group</h3>
+    <p class="msub" id="del-msub"></p>
+    <div class="fg"><label>Type the group name to confirm *</label><input type="text" id="del-input" placeholder="Exact group name"/></div>
+    <div class="macts">
+      <button onclick="closeDelModal()">Cancel</button>
+      <button style="background:#FCEBEB;color:#791F1F;border-color:#F09595" onclick="confirmDel()"><i class="ti ti-trash" aria-hidden="true"></i> Delete</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const SEED=[
+  {id:'g1',name:'Nexora',max:6,members:[{name:'Ng Shi Kee',id:'23062797',ldr:true},{name:'Tan Aik Fatt',id:'23078595'},{name:'Thoo Chin Hao',id:'23074155'},{name:'Tan Jia Xin',id:'23080880'},{name:'So Jim Hom',id:'23073307'},{name:'Brandon Lee Cheng Yi',id:'23091754'}]},
+  {id:'g2',name:'Chatgpt',max:6,members:[{name:'Inez Reyhanz Binti Khaeril Zach',id:'16082398',ldr:true},{name:'Keshna Devi Goorah',id:'24017675'},{name:'Teoh Pei Ying',id:'23137714'},{name:'Chooi Mei Yin',id:'23013634'},{name:'Charissa Santos Cruz',id:'23016199'},{name:'Ho Jia Mei',id:'24005688'}]},
+  {id:'g3',name:'AI Lovers',max:6,members:[{name:'Jaeden Ting Yiyong',id:'23009798',ldr:true},{name:'Evan Lo Jen Zhen',id:'23026842'},{name:'Wai Phyo Hein',id:'22108765'},{name:'Chin Shaw Zhuong',id:'24153058'},{name:'Sohom Chakma',id:'22107791'},{name:'Raymond Tham Chun Keet',id:'19010461'}]},
+  {id:'g4',name:'ChatGPT',max:6,members:[{name:'Colin Ng Mung Chun',id:'22070007',ldr:true},{name:'Ho Mun Wai',id:'22067292'},{name:'Bryan Chung Zhi Wei',id:'22051502'},{name:'Koh Ti Sun',id:'22086607'},{name:'Lim Yit Wei',id:'22076244'}]},
+  {id:'g5',name:'Breaking Bank',max:6,members:[{name:'Teo Zen Ben',id:'22120679',ldr:true},{name:'Jeanette Tan En Jie',id:'23035173'},{name:'Nyow An Qi',id:'23026693'},{name:'Thevesh A/L Chandran',id:'24017717'},{name:'Lau Zheng Hao',id:'23137771'}]},
+  {id:'g6',name:'powerpuff',max:6,members:[{name:'Rhianne See Tho',id:'22035273',ldr:true},{name:'Chan Hui Qi',id:'22076673'},{name:'Chloe Low Hoy Yi',id:'22074991'},{name:'Clarine Chew Kai Xin',id:'23108251'},{name:'Pang Xiao Qi',id:'22054159'},{name:'Yap Zhi Xuan',id:'22067284'}]},
+  {id:'g7',name:'AI AI Captain',max:6,members:[{name:'Soong Shuki',id:'23105059',ldr:true},{name:'Choong Yuk Yan',id:'23101694'},{name:'Jacey Ng Siew Fang',id:'22050587'},{name:'Oh Chen Wei',id:'22043574'},{name:'Joshua Ng Wei Hong',id:'22063747'}]},
+  {id:'g8',name:'AI-67',max:6,members:[{name:'Lew Shang Hao',id:'22055362',ldr:true},{name:'Kong Wei Theng',id:'22077184'},{name:'Foo Yew Jo',id:'22054290'},{name:'Wong Zi Yang',id:'22090336'},{name:'Lee Zong Xun',id:'22083844'},{name:'Bernice Wong Jian Xuan',id:'22056998'}]},
+  {id:'g9',name:'Cooked',max:6,members:[{name:'Ong Xin Rou',id:'23088479',ldr:true},{name:'Cindy Wong',id:'22112908'},{name:'Janet Beh Jing Le',id:'24121097'},{name:'Lee Jean Suen',id:'24040644'},{name:'Jesslyn Wong Mei Chui',id:'23029804'}]},
+  {id:'g10',name:'SunGPT',max:6,members:[{name:'Chu Hong Wu',id:'24029308',ldr:true},{name:'Lau Zi Yi',id:'24021891'},{name:'Frederich Leong Heng Hao',id:'24021461'},{name:'Swee Kae Xuan',id:'24017642'},{name:'Afiq Bin Nor Azlan',id:'24039638'},{name:'Gan Wei Jun',id:'24023590'}]},
+  {id:'g11',name:'Wo Ai Ni',max:6,members:[{name:'Chin Yung Xuan',id:'22057590',ldr:true},{name:'Albert Pang Kian Cheng',id:'22040943'},{name:'Eng Zheng Yu',id:'22070544'},{name:'Tye Khan Wei',id:'22063051'},{name:'Addison Loo Jie Wen',id:'22081293'},{name:'Tan Yann Bin',id:'22071674'}]},
+  {id:'g12',name:'AI-mazing',max:6,members:[{name:'Arun A/L Thana Balan',id:'22092738',ldr:true},{name:'Oscar Tan Tong Sing',id:'22063176'},{name:'Kua Qian Ru',id:'22073522'},{name:'Amberly Teoh Ke Wei',id:'22094775'},{name:'Tan Ee Yern',id:'22101877'},{name:'Chan Yong Hang',id:'23030992'}]},
+  {id:'g13',name:'Giggle',max:6,members:[{name:'Wong Hui San',id:'22034540',ldr:true},{name:'Ayu Wen Li',id:'22017867'},{name:'Keertana A/P Subramaniam',id:'23109614'},{name:'Siow Qi Yung',id:'22053037'},{name:'Vidhipriya Devi Pokiri',id:'23057953'}]},
+  {id:'g14',name:'The Six Watermelons',max:6,members:[{name:'Goo Weng Xi',id:'22034987',ldr:true},{name:'Tham Yan Qi',id:'22055719'},{name:'Lim Phin Han',id:'22052898'},{name:'Chia Kah Yan',id:'23096688'},{name:'Victoria Liu Xiao Zhen',id:'22065676'},{name:'Tai Xiu Yiu',id:'22038756'}]},
+  {id:'g15',name:'Ai Slaps',max:6,members:[{name:'Lionel Lim Ye Sheng',id:'22086540',ldr:true},{name:'Lim Chun Yeh',id:'22073233'},{name:'Hoang Minh Chau',id:'22007702'},{name:'Thum Ji Meng',id:'22082341'},{name:'Jaimelynn Wong Shin Yew',id:'23113814'},{name:'Fathima Nuha Nizar',id:'23102676'}]},
+  {id:'g16',name:'Hopperssssss',max:6,members:[{name:'Tan Yuett Ning',id:'22057954',ldr:true},{name:'Tan Wee Jin',id:'22057384'},{name:'Liew Sau Yang',id:'22062475'},{name:'Oh Voon Keat',id:'22064091'},{name:'Edward Thong Jia Ming',id:'22055818'},{name:'Tang Zewei',id:'22106256'}]},
+  {id:'g17',name:'Six_Seven',max:6,members:[{name:'Yew Hao En',id:'22070452',ldr:true},{name:'Lee Chun Kit',id:'22070593'},{name:'Lee Jun Yin',id:'22060651'},{name:'Chan Zhien Yet',id:'22078927'},{name:'Ryan Choo Jun-Leng',id:'22070247'}]},
+  {id:'g18',name:'group9',max:6,members:[{name:'Lee Yee Kang',id:'24029084',ldr:true},{name:'Lee Wie Jie',id:'24033474'},{name:'Liang Jin Yee',id:'24023285'},{name:'Soon Wei Zhe',id:'24024523'},{name:'Zheng Wei Xuen',id:'22007827'},{name:'Chang Zi Kai',id:'24027302'}]},
+  {id:'g19',name:'Nini and the gang',max:7,members:[{name:'Loke Sheng Heng',id:'22081376',ldr:true},{name:'Yong Kar Yee',id:'22057749'},{name:'Chua Guangrou',id:'22086037'},{name:'Yap Yung Jun',id:'25048612'},{name:'Wong Xu Liang',id:'25018565'},{name:'Loo ZiXian',id:'22007801'}]},
+  {id:'g20',name:'6 Humans',max:6,members:[{name:'Roshan Sivakumar',id:'23028285',ldr:true},{name:'Lee Jang Jou',id:'21099502'},{name:'Thong Yong Ru',id:'23021272'},{name:'Lim Han Xuan',id:'22120158'},{name:'Ginnie Thai Junyi',id:'23089519'},{name:'Soh Wei Wen',id:'23015118'}]},
+  {id:'g21',name:'null',max:6,members:[{name:'Tan Kok Feng',id:'23015811',ldr:true},{name:'Wong Wen Ru',id:'23020621'},{name:'Wong Yu Xuan',id:'24020810'},{name:'Ch’ng Shen Ming',id:'24018566'},{name:'Yong Yung Jian',id:'24028748'},{name:'Tan Kok Feng',id:'23015811'}]},
+  {id:'g22',name:'Practical 15 Group 1',max:6,members:[{name:'Caryl Kong Khoy Yee',id:'22070098',ldr:true},{name:'Michelle Lim Chieh Yi',id:'22075881'},{name:'Phoebe Wong Wei Yen',id:'22075659'},{name:'Tan Sim May',id:'22089585'},{name:'Tay Ri Anne',id:'22055164'}]},
+];
+
+let groups=[];
+let delGid=null;
+let cu={};
+let cstep=1;
+try{cu=JSON.parse(localStorage.getItem('sg_u')||'{}')}catch(e){}
+function saveU(u){try{localStorage.setItem('sg_u',JSON.stringify(u))}catch(e){}cu=u}
+
+function ini(n){return n.trim().split(/\s+/).slice(0,2).map(w=>w[0]).join('').toUpperCase()||'?'}
+function avc(n){let h=0;for(let c of n)h=(h*31+c.charCodeAt(0))%7;return h}
+function ago(ts){if(!ts)return'';const d=Date.now()-ts;if(d<60000)return'just now';if(d<3600000)return Math.floor(d/60000)+'m ago';if(d<86400000)return Math.floor(d/3600000)+'h ago';return Math.floor(d/86400000)+'d ago'}
+function uid(){return'gx'+Date.now().toString(36)+Math.random().toString(36).slice(2,5)}
+function allIds(){return new Set(groups.flatMap(g=>g.members.map(m=>m.id.trim())))}
+
+async function loadData(refresh=false){
+  setSyncLbl('<span class="spin"></span>Syncing…');
+  try{
+    const r=await window.storage.get('sg-groups-v1',true);
+    if(r&&r.value){
+      groups=JSON.parse(r.value);
+    } else {
+      groups=SEED.map(g=>({...g,ts:Date.now()-Math.floor(Math.random()*86400000),members:g.members.map(m=>({...m}))}));
+      await persist();
+    }
+    setSyncLbl('<i class="ti ti-cloud-check" style="color:#1D9E75;font-size:14px"></i> Synced');
+  }catch(e){
+    if(!groups.length)groups=SEED.map(g=>({...g,ts:Date.now(),members:g.members.map(m=>({...m}))}));
+    setSyncLbl('<i class="ti ti-wifi-off" style="font-size:14px"></i> Offline');
+  }
+  if(refresh)showAlert('Data refreshed.','a-inf');
+  updateStats();renderGroups();renderSheet();renderMy();
+}
+async function persist(){
+  try{await window.storage.set('sg-groups-v1',JSON.stringify(groups),true)}catch(e){}
+  setSyncLbl('<i class="ti ti-cloud-check" style="color:#1D9E75;font-size:14px"></i> Saved');
+}
+function setSyncLbl(h){document.getElementById('sync-lbl').innerHTML=h}
+
+function updateStats(){
+  document.getElementById('s-total').textContent=groups.length;
+  document.getElementById('s-open').textContent=groups.filter(g=>g.members.length<g.max).length;
+  document.getElementById('s-members').textContent=groups.reduce((a,g)=>a+g.members.length,0);
+  document.getElementById('s-spots').textContent=groups.reduce((a,g)=>a+Math.max(0,g.max-g.members.length),0);
+}
+
+function renderGroups(){
+  updateStats();
+  const q=(document.getElementById('srch').value||'').toLowerCase();
+  const f=document.getElementById('flt').value;
+  const list=groups.filter(g=>{
+    const txt=(g.name+g.members.map(m=>m.name+m.id).join('')).toLowerCase();
+    const m=txt.includes(q);
+    if(f==='open')return m&&g.members.length<g.max;
+    if(f==='full')return m&&g.members.length>=g.max;
+    return m;
+  });
+  const c=document.getElementById('grids');
+  if(!list.length){c.innerHTML=`<div class="empty"><i class="ti ti-mood-empty" aria-hidden="true"></i><p>No groups found</p></div>`;return}
+  c.innerHTML=list.map(g=>{
+    const full=g.members.length>=g.max;
+    const mine=g.members.some(m=>m.id===cu.id);
+    const slots=Array.from({length:g.max},(_,i)=>`<div class="slot${i<g.members.length?' on':''}"></div>`).join('');
+    const rows=g.members.map(m=>`<div class="mrow">
+      <div class="av av${avc(m.name)}">${ini(m.name)}</div>
+      <div style="flex:1;min-width:0"><div class="mn">${m.name}</div><div class="mid">${m.id}</div></div>
+      ${m.ldr?'<span class="badge b-ldr" style="font-size:10px;padding:1px 5px">Leader</span>':''}
+      ${m.id===cu.id?'<span class="badge b-me" style="font-size:10px;padding:1px 5px">You</span>':''}
+    </div>`).join('');
+    let btn;
+    if(full)btn=`<button disabled style="width:100%;opacity:.45;cursor:not-allowed">Group is full</button>`;
+    else if(mine)btn=`<button disabled style="width:100%;background:#E1F5EE;color:#085041;border-color:#5DCAA5;cursor:default">✓ You're in this group</button>`;
+    else if(cu.groupId)btn=`<button disabled style="width:100%;opacity:.45;cursor:not-allowed">Already in a group</button>`;
+    else btn=`<button style="width:100%;background:#0078d4;color:#fff;border-color:#0078d4" onclick="quickJoin('${g.id}')"><i class="ti ti-user-plus" aria-hidden="true"></i> Join</button>`;
+    return`<div class="card${full?' full':''}${mine?' mine':''}">
+      <div class="ctop"><div class="cname">${g.name}</div><span class="badge ${full?'b-full':'b-open'}">${full?'Full':'Open'}</span></div>
+      <div class="slbl">${g.members.length} / ${g.max} members</div>
+      <div class="slots">${slots}</div>
+      <div class="mlist">${rows}</div>
+      ${g.ts?`<div class="meta"><i class="ti ti-clock" style="font-size:11px" aria-hidden="true"></i> ${ago(g.ts)} · ${g.max-g.members.length} spot${g.max-g.members.length!==1?'s':''} left</div>`:''}
+      ${btn}
+      <button style="width:100%;margin-top:5px;background:#FCEBEB;color:#791F1F;border-color:#F09595" onclick="openDelModal('${g.id}')"><i class="ti ti-trash" aria-hidden="true"></i> Delete</button>
+    </div>`;
+  }).join('');
+}
+
+function renderSheet(){
+  const all=groups.flatMap(g=>g.members.map(m=>({...m,grp:g.name,max:g.max,size:g.members.length})));
+  document.getElementById('resp-lbl').textContent=`${all.length} response${all.length!==1?'s':''}`;
+  if(!all.length){document.getElementById('sheet-tbl').innerHTML=`<div class="empty" style="grid-column:unset"><i class="ti ti-table" aria-hidden="true"></i><p>No responses yet</p></div>`;return}
+  document.getElementById('sheet-tbl').innerHTML=`<table style="width:100%;border-collapse:collapse;font-size:12px;table-layout:fixed">
+    <colgroup><col style="width:28px"><col style="width:auto"><col style="width:90px"><col style="width:110px"><col style="width:55px"></colgroup>
+    <thead><tr style="background:var(--color-background-secondary);border-bottom:.5px solid var(--color-border-tertiary)">
+      <th style="padding:7px 8px;text-align:left;font-weight:500;color:var(--color-text-secondary);font-size:11px">#</th>
+      <th style="padding:7px 8px;text-align:left;font-weight:500;color:var(--color-text-secondary);font-size:11px">Name</th>
+      <th style="padding:7px 8px;text-align:left;font-weight:500;color:var(--color-text-secondary);font-size:11px">Student ID</th>
+      <th style="padding:7px 8px;text-align:left;font-weight:500;color:var(--color-text-secondary);font-size:11px">Group</th>
+      <th style="padding:7px 8px;text-align:left;font-weight:500;color:var(--color-text-secondary);font-size:11px">Role</th>
+    </tr></thead>
+    <tbody>${all.map((r,i)=>`<tr style="border-bottom:.5px solid var(--color-border-tertiary);${r.id===cu.id?'background:rgba(0,120,212,.05)':''}">
+      <td style="padding:6px 8px;color:var(--color-text-secondary)">${i+1}</td>
+      <td style="padding:6px 8px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${r.name}</td>
+      <td style="padding:6px 8px;font-family:var(--font-mono);font-size:11px">${r.id}</td>
+      <td style="padding:6px 8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${r.grp}</td>
+      <td style="padding:6px 8px"><span class="badge ${r.ldr?'b-ldr':'b-me'}" style="font-size:10px">${r.ldr?'Leader':'Member'}</span></td>
+    </tr>`).join('')}</tbody>
+  </table>`;
+}
+
+function renderMy(){
+  const c=document.getElementById('my-content');
+  if(!cu.id){c.innerHTML=`<div class="mcard"><div class="alert a-inf"><i class="ti ti-info-circle"></i>Not registered yet. Use the Register tab to join or create a group.</div></div>`;return}
+  const g=groups.find(gr=>gr.id===cu.groupId);
+  if(!g){c.innerHTML=`<div class="mcard"><div class="alert a-wrn"><i class="ti ti-alert-triangle"></i>Your group was deleted or doesn't exist.</div></div>`;return}
+  const full=g.members.length>=g.max;
+  const slots=Array.from({length:g.max},(_,i)=>`<div class="slot${i<g.members.length?' on':''}"></div>`).join('');
+  const rows=g.members.map(m=>`<div class="mrow">
+    <div class="av av${avc(m.name)}">${ini(m.name)}</div>
+    <div style="flex:1;min-width:0"><div class="mn">${m.name} ${m.ldr?'<span class="badge b-ldr" style="font-size:10px;padding:1px 5px">Leader</span>':''} ${m.id===cu.id?'<span class="badge b-me" style="font-size:10px;padding:1px 5px">You</span>':''}</div><div class="mid">${m.id}</div></div>
+  </div>`).join('');
+  c.innerHTML=`<div class="mcard">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px">
+      <div style="font-size:18px;font-weight:500">${g.name}</div>
+      <span class="badge ${full?'b-full':'b-open'}">${g.members.length}/${g.max} · ${full?'Full':'Open'}</span>
+    </div>
+    <div class="review" style="margin-bottom:1rem">
+      <div class="rr"><span class="rk">Your name</span><span class="rv">${cu.name}</span></div>
+      <div class="rr"><span class="rk">Student ID</span><span class="rv" style="font-family:var(--font-mono);font-size:12px">${cu.id}</span></div>
+      ${cu.email?`<div class="rr"><span class="rk">Email</span><span class="rv">${cu.email}</span></div>`:''}
+      <div class="rr"><span class="rk">Role</span><span class="rv">${g.members.find(m=>m.id===cu.id)?.ldr?'Leader':'Member'}</span></div>
+    </div>
+    <div class="sec-lbl">Members</div>
+    <div class="slots" style="margin-bottom:8px">${slots}</div>
+    <div class="mlist" style="margin-bottom:1rem">${rows}</div>
+    <hr class="div"/>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button style="background:#FCEBEB;color:#791F1F;border-color:#F09595" onclick="leaveGroup()"><i class="ti ti-logout" aria-hidden="true"></i> Leave group</button>
+      <button style="background:#FCEBEB;color:#791F1F;border-color:#F09595" onclick="openDelModal('${g.id}')"><i class="ti ti-trash" aria-hidden="true"></i> Delete group</button>
+    </div>
+  </div>`;
+}
+
+function goTab(t,btn){
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('on'));
+  btn.classList.add('active');
+  document.getElementById('tab-'+t).classList.add('on');
+  if(t==='browse')renderGroups();
+  if(t==='my')renderMy();
+  if(t==='sheet')renderSheet();
+  if(t==='register')populateJoinSel();
+}
+
+function showAlert(msg,cls='a-ok'){
+  const ic={['a-ok']:'ti-circle-check',['a-err']:'ti-alert-circle',['a-inf']:'ti-info-circle',['a-wrn']:'ti-alert-triangle'};
+  const b=document.getElementById('alert-box');
+  b.innerHTML=`<div class="alert ${cls}"><i class="ti ${ic[cls]||'ti-info-circle'}"></i>${msg}</div>`;
+  setTimeout(()=>{b.innerHTML=''},5000);
+}
+
+function populateJoinSel(){
+  const s=document.getElementById('join-sel');
+  const open=groups.filter(g=>g.members.length<g.max);
+  s.innerHTML=open.length
+    ?'<option value="">— Select a group —</option>'+open.map(g=>`<option value="${g.id}">${g.name} (${g.members.length}/${g.max} members)</option>`).join('')
+    :'<option value="">No open groups available</option>';
+}
+
+function toggleAction(){
+  const v=document.getElementById('cr-action').value;
+  document.getElementById('join-fields').style.display=v==='join'?'block':'none';
+  document.getElementById('create-fields').style.display=v==='create'?'block':'none';
+}
+
+function goStep(n){
+  if(n===2){
+    const nm=document.getElementById('cr-name').value.trim();
+    const sid=document.getElementById('cr-id').value.trim();
+    const em=document.getElementById('cr-email').value.trim();
+    if(!nm||!sid||!em){showAlert('Please fill in all fields.','a-err');return}
+    if(allIds().has(sid)&&!cu.id){showAlert('This student ID is already registered.','a-err');return}
+    if(cu.groupId&&groups.find(g=>g.id===cu.groupId)){showAlert('You are already in a group.','a-err');return}
+    populateJoinSel();
+  }
+  if(n===3){
+    const act=document.getElementById('cr-action').value;
+    if(act==='join'){if(!document.getElementById('join-sel').value){showAlert('Please select a group.','a-err');return}}
+    else{if(!document.getElementById('gr-name').value.trim()){showAlert('Please enter a group name.','a-err');return}}
+    buildReview();
+  }
+  cstep=n;
+  ['step1','step2','step3'].forEach((id,i)=>document.getElementById(id).style.display=i+1===n?'block':'none');
+  document.querySelectorAll('.sd').forEach((d,i)=>{d.classList.remove('act','done');if(i+1<n)d.classList.add('done');if(i+1===n)d.classList.add('act')});
+}
+
+function buildReview(){
+  const nm=document.getElementById('cr-name').value.trim();
+  const sid=document.getElementById('cr-id').value.trim();
+  const em=document.getElementById('cr-email').value.trim();
+  const act=document.getElementById('cr-action').value;
+  let h=`<div class="rr"><span class="rk">Name</span><span class="rv">${nm}</span></div>`;
+  h+=`<div class="rr"><span class="rk">Student ID</span><span class="rv" style="font-family:var(--font-mono);font-size:12px">${sid}</span></div>`;
+  h+=`<div class="rr"><span class="rk">Email</span><span class="rv">${em}</span></div>`;
+  if(act==='join'){
+    const sel=document.getElementById('join-sel');
+    h+=`<div class="rr"><span class="rk">Action</span><span class="rv">Join existing group</span></div>`;
+    h+=`<div class="rr"><span class="rk">Group</span><span class="rv">${sel.options[sel.selectedIndex]?.text||''}</span></div>`;
+  } else {
+    h+=`<div class="rr"><span class="rk">Action</span><span class="rv">Create new group</span></div>`;
+    h+=`<div class="rr"><span class="rk">Group name</span><span class="rv">${document.getElementById('gr-name').value.trim()}</span></div>`;
+    h+=`<div class="rr"><span class="rk">Max size</span><span class="rv">${document.getElementById('gr-max').value} members</span></div>`;
+  }
+  document.getElementById('review-box').innerHTML=h;
+}
+
+async function submitForm(){
+  const btn=document.getElementById('sub-btn');
+  btn.disabled=true;btn.innerHTML='<span class="spin"></span>Submitting…';
+  const nm=document.getElementById('cr-name').value.trim();
+  const sid=document.getElementById('cr-id').value.trim();
+  const em=document.getElementById('cr-email').value.trim();
+  const act=document.getElementById('cr-action').value;
+  await loadData();
+  if(allIds().has(sid)){showAlert('Student ID already registered.','a-err');btn.disabled=false;btn.innerHTML='<i class="ti ti-send"></i> Submit response';return}
+  if(act==='create'){
+    const gn=document.getElementById('gr-name').value.trim();
+    const mx=parseInt(document.getElementById('gr-max').value);
+    if(groups.some(g=>g.name.toLowerCase()===gn.toLowerCase())){showAlert('A group with that name already exists.','a-err');btn.disabled=false;btn.innerHTML='<i class="ti ti-send"></i> Submit response';return}
+    const g={id:uid(),name:gn,max:mx,ts:Date.now(),members:[{name:nm,id:sid,ldr:true}]};
+    groups.unshift(g);
+    saveU({name:nm,id:sid,email:em,groupId:g.id});
+    await persist();
+    showAlert(`Group "${gn}" created!`);
+  } else {
+    const gid=document.getElementById('join-sel').value;
+    const g=groups.find(gr=>gr.id===gid);
+    if(!g||g.members.length>=g.max){showAlert('Group is now full or unavailable.','a-err');btn.disabled=false;btn.innerHTML='<i class="ti ti-send"></i> Submit response';return}
+    g.members.push({name:nm,id:sid});
+    saveU({name:nm,id:sid,email:em,groupId:g.id});
+    await persist();
+    showAlert(`Joined "${g.name}"!`);
+  }
+  ['cr-name','cr-id','cr-email','gr-name'].forEach(id=>document.getElementById(id).value='');
+  goStep(1);btn.disabled=false;btn.innerHTML='<i class="ti ti-send"></i> Submit response';
+  updateStats();renderGroups();renderSheet();renderMy();
+  document.querySelectorAll('.tab')[2].click();
+}
+
+async function quickJoin(gid){
+  const nm=prompt('Your full name:');if(!nm||!nm.trim())return;
+  const sid=prompt('Your Student ID:');if(!sid||!sid.trim())return;
+  if(allIds().has(sid.trim())){showAlert('Student ID already registered.','a-err');return}
+  const g=groups.find(gr=>gr.id===gid);
+  if(!g||g.members.length>=g.max){showAlert('Group full.','a-err');return}
+  g.members.push({name:nm.trim(),id:sid.trim()});
+  saveU({name:nm.trim(),id:sid.trim(),groupId:g.id});
+  await persist();
+  showAlert(`Joined "${g.name}"!`);
+  updateStats();renderGroups();renderSheet();renderMy();
+}
+
+async function leaveGroup(){
+  if(!confirm('Leave your group?'))return;
+  const g=groups.find(gr=>gr.id===cu.groupId);
+  if(g){
+    g.members=g.members.filter(m=>m.id!==cu.id);
+    if(!g.members.length)groups=groups.filter(gr=>gr.id!==g.id);
+    await persist();
+  }
+  saveU({});
+  showAlert('You left the group.','a-inf');
+  updateStats();renderGroups();renderSheet();renderMy();
+}
+
+function openDelModal(gid){
+  delGid=gid;
+  const g=groups.find(gr=>gr.id===gid);
+  document.getElementById('del-msub').textContent=`Delete "${g.name}"? This removes all ${g.members.length} member${g.members.length!==1?'s':''} and cannot be undone.`;
+  document.getElementById('del-input').value='';
+  document.getElementById('del-wrap').classList.add('open');
+}
+function closeDelModal(){document.getElementById('del-wrap').classList.remove('open');delGid=null}
+
+async function confirmDel(){
+  const g=groups.find(gr=>gr.id===delGid);
+  if(!g){closeDelModal();return}
+  if(document.getElementById('del-input').value.trim()!==g.name){showAlert(`Type exact name: "${g.name}"`, 'a-err');return}
+  const gn=g.name;
+  groups=groups.filter(gr=>gr.id!==g.id);
+  if(cu.groupId===delGid)saveU({});
+  await persist();
+  closeDelModal();
+  showAlert(`"${gn}" deleted.`,'a-inf');
+  updateStats();renderGroups();renderSheet();renderMy();
+}
+
+loadData();
+</script>
