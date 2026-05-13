@@ -1,527 +1,2103 @@
+<!DOCTYPE html>
+<!-- saved from url=(0063)file:///D:/yunxint/Downloads/assignment-group-registration.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Assignment Group Registration</title>
+<link href="./Assignment Group Registration_files/css2" rel="stylesheet">
+
+<!-- SheetJS for Excel read/write -->
+<script src="./Assignment Group Registration_files/xlsx.full.min.js.download"></script>
+
+<!-- ================================================================
+  FIREBASE SETUP
+  1. Go to https://console.firebase.google.com
+  2. Create project → Add Web App → copy firebaseConfig below
+  3. Enable Firestore Database (test mode)
+  Without config the app runs in Demo Mode (local data only).
+================================================================ -->
+<script src="./Assignment Group Registration_files/firebase-app-compat.js.download"></script>
+<script src="./Assignment Group Registration_files/firebase-firestore-compat.js.download"></script>
+<script>
+const firebaseConfig = {
+  apiKey:            "YOUR_API_KEY",
+  authDomain:        "YOUR_PROJECT_ID.firebaseapp.com",
+  projectId:         "YOUR_PROJECT_ID",
+  storageBucket:     "YOUR_PROJECT_ID.appspot.com",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId:             "YOUR_APP_ID"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+</script>
 
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{font-family:var(--font-sans);color:var(--color-text-primary);background:transparent;font-size:14px;line-height:1.6}
-.hdr{display:flex;align-items:center;gap:10px;padding:.875rem 0 .75rem;border-bottom:.5px solid var(--color-border-tertiary);margin-bottom:1rem}
-.hdr-icon{width:30px;height:30px;border-radius:var(--border-radius-md);background:#0078d4;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.hdr-icon i{color:#fff;font-size:16px}
-.hdr-title{font-size:15px;font-weight:500}
-.hdr-sub{font-size:12px;color:var(--color-text-secondary);margin-left:auto;display:flex;align-items:center;gap:5px}
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:1rem}
-.stat{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:9px 12px;text-align:center}
-.stat .v{font-size:20px;font-weight:500;line-height:1.2}
-.stat .l{font-size:11px;color:var(--color-text-secondary);margin-top:1px}
-.tabs{display:flex;gap:3px;background:var(--color-background-secondary);border:.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:3px;margin-bottom:1rem}
-.tab{flex:1;padding:6px 8px;font-size:13px;font-weight:500;cursor:pointer;background:none;border:none;border-radius:var(--border-radius-md);color:var(--color-text-secondary);transition:all .15s;display:flex;align-items:center;justify-content:center;gap:4px;font-family:var(--font-sans)}
-.tab:hover{color:var(--color-text-primary);background:rgba(0,0,0,.04)}
-.tab.active{background:var(--color-background-primary);color:var(--color-text-primary);box-shadow:0 1px 3px rgba(0,0,0,.08)}
-.tab i{font-size:14px}
-.sec{display:none}.sec.on{display:block}
-.frow{display:flex;gap:8px;margin-bottom:.875rem;flex-wrap:wrap}
-.frow input{flex:1;min-width:150px}
-.frow select{width:130px}
-.frow button{white-space:nowrap}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:10px}
-.card{background:var(--color-background-primary);border:.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:.875rem;display:flex;flex-direction:column;transition:border-color .15s}
-.card:hover{border-color:var(--color-border-secondary)}
-.card.mine{border:1px solid #0078d4}
-.card.full{opacity:.6}
-.ctop{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px}
-.cname{font-size:14px;font-weight:500}
-.badge{display:inline-flex;align-items:center;padding:2px 7px;border-radius:20px;font-size:11px;font-weight:500;border:.5px solid;white-space:nowrap}
-.b-open{background:#E1F5EE;color:#085041;border-color:#5DCAA5}
-.b-full{background:#FCEBEB;color:#791F1F;border-color:#F09595}
-.b-me{background:#E6F1FB;color:#0C447C;border-color:#85B7EB}
-.b-ldr{background:#FAEEDA;color:#633806;border-color:#EF9F27}
-.slots{display:flex;gap:3px;margin:5px 0 8px}
-.slot{height:4px;border-radius:2px;flex:1;background:var(--color-border-secondary)}
-.slot.on{background:#0078d4}
-.slbl{font-size:11px;color:var(--color-text-secondary);margin-bottom:3px}
-.mlist{margin-bottom:8px}
-.mrow{display:flex;align-items:center;gap:7px;padding:4px 0;border-bottom:.5px solid var(--color-border-tertiary);font-size:12px}
+:root{
+  --bg:#f5f3ee;--surface:#fff;--surface2:#f0ede7;
+  --border:rgba(0,0,0,.1);--border-md:rgba(0,0,0,.18);
+  --text:#1a1916;--muted:#6b6860;
+  --accent:#2d5a3d;--accent-l:#e8f2ec;--accent-b:#8fbd9f;
+  --red:#8b2a2a;--red-l:#fdf0f0;--red-b:#d4a0a0;
+  --blue:#1a3a6b;--blue-l:#eef3fc;--blue-b:#8aaad4;
+  --amber:#7a5c1a;--amber-l:#fdf6e8;--amber-b:#d4b87a;
+  --green:#155724;--green-l:#d4edda;--green-b:#8fc99d;
+  --r:12px;--rsm:8px;
+  --sh:0 1px 3px rgba(0,0,0,.08),0 4px 16px rgba(0,0,0,.06);
+  --sh-sm:0 1px 2px rgba(0,0,0,.06);
+}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:15px;line-height:1.6}
+
+/* HEADER */
+.hdr{background:var(--surface);border-bottom:1px solid var(--border);padding:0 2rem;position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;height:64px;gap:1rem}
+.logo{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.logo-ic{width:34px;height:34px;background:var(--accent);border-radius:9px;display:flex;align-items:center;justify-content:center}
+.logo-txt{font-family:'DM Serif Display',serif;font-size:18px;letter-spacing:-.3px}
+.hdr-right{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.conn-badge{display:flex;align-items:center;gap:6px;font-size:12px;padding:4px 10px;border-radius:20px;border:1px solid var(--border);color:var(--muted)}
+.conn-dot{width:7px;height:7px;border-radius:50%;background:#ccc;flex-shrink:0;transition:background .3s}
+.conn-dot.live{background:#4caf50;box-shadow:0 0 0 2px #c8e6c9}
+.conn-dot.err{background:#f44336}
+
+/* EXCEL TOOLBAR */
+.xl-bar{display:flex;gap:8px;align-items:center}
+.xl-btn{font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;padding:6px 13px;border-radius:var(--rsm);border:1px solid;cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:all .15s}
+.xl-btn svg{width:14px;height:14px}
+.xl-import{background:var(--green-l);color:var(--green);border-color:var(--green-b)}
+.xl-import:hover{background:#c3e6cb}
+.xl-export{background:var(--blue-l);color:var(--blue);border-color:var(--blue-b)}
+.xl-export:hover{background:#d0e4f7}
+.xl-template{background:var(--amber-l);color:var(--amber);border-color:var(--amber-b)}
+.xl-template:hover{background:#faeecf}
+#xl-file-input{display:none}
+
+/* LAYOUT */
+.wrap{max-width:1040px;margin:0 auto;padding:2rem 1.5rem}
+
+/* HERO */
+.hero{text-align:center;padding:2.5rem 0 2rem;animation:fadeUp .5s ease both}
+.hero h1{font-family:'DM Serif Display',serif;font-size:clamp(26px,5vw,38px);font-weight:400;line-height:1.2;margin-bottom:10px;letter-spacing:-.5px}
+.hero p{font-size:15px;color:var(--muted);max-width:480px;margin:0 auto}
+
+/* NOTICE */
+.notice{display:flex;gap:10px;align-items:flex-start;background:var(--amber-l);border:1px solid var(--amber-b);border-radius:var(--rsm);padding:12px 16px;font-size:13px;color:var(--amber);margin-bottom:1.25rem}
+.notice svg{width:15px;height:15px;flex-shrink:0;margin-top:2px}
+
+/* STATS */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:1.25rem 0 1.75rem}
+.stat{background:var(--surface);border:1px solid var(--border);border-radius:var(--rsm);padding:.9rem 1.1rem;text-align:center}
+.stat .v{font-size:24px;font-weight:600;line-height:1;margin-bottom:3px}
+.stat .l{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+
+/* TABS */
+.tabs{display:flex;gap:2px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:4px;margin-bottom:1.25rem}
+.tab{flex:1;padding:8px 12px;font-size:14px;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;background:none;border:none;border-radius:8px;color:var(--muted);transition:all .18s;display:flex;align-items:center;justify-content:center;gap:5px}
+.tab:hover{color:var(--text);background:rgba(0,0,0,.04)}
+.tab.on{background:var(--surface);color:var(--text);box-shadow:var(--sh-sm)}
+.tab svg{width:14px;height:14px;flex-shrink:0}
+
+/* SECTIONS */
+.sec{display:none;animation:fadeUp .3s ease both}
+.sec.on{display:block}
+
+/* FILTER */
+.frow{display:flex;gap:10px;margin-bottom:1.1rem;flex-wrap:wrap}
+.frow input{flex:1;min-width:180px}
+.frow select{width:145px}
+
+/* FORM ELEMENTS */
+input,select,textarea{font-family:'DM Sans',sans-serif;font-size:14px;background:var(--surface);border:1px solid var(--border-md);border-radius:var(--rsm);padding:8px 11px;color:var(--text);outline:none;transition:border-color .15s,box-shadow .15s;width:100%}
+input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(45,90,61,.1)}
+select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b6860' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 9px center;padding-right:28px}
+textarea{resize:vertical;min-height:68px}
+
+/* FORM CARD */
+.fcard{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1.6rem;box-shadow:var(--sh-sm);max-width:560px;margin:0 auto}
+.fcard h2{font-family:'DM Serif Display',serif;font-size:19px;font-weight:400;margin-bottom:4px}
+.fcard .sub{font-size:13px;color:var(--muted);margin-bottom:1.4rem}
+.fg{margin-bottom:.9rem}
+.fg label{display:block;font-size:12px;font-weight:500;color:var(--muted);margin-bottom:4px}
+.fgrow{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.divider{border:none;border-top:1px solid var(--border);margin:1.1rem 0}
+.slbl{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:.9rem}
+
+/* BUTTONS */
+.btn{font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;padding:8px 17px;border-radius:var(--rsm);border:1px solid var(--border-md);background:var(--surface);color:var(--text);cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:6px}
+.btn:hover{background:var(--surface2)}
+.btn:active{transform:scale(.98)}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.btn-p{background:var(--accent);color:#fff;border-color:var(--accent)}
+.btn-p:hover{background:#234d33}
+.btn-d{background:var(--red-l);color:var(--red);border-color:var(--red-b)}
+.btn-d:hover{background:#fae0e0}
+.btn-a{background:var(--amber-l);color:var(--amber);border-color:var(--amber-b)}
+.btn-a:hover{background:#faeecc}
+.btn-full{width:100%;justify-content:center;margin-top:8px}
+.btn svg{width:14px;height:14px}
+.brow{display:flex;gap:8px;flex-wrap:wrap}
+
+/* GROUP GRID */
+.ggrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(295px,1fr));gap:1rem}
+
+/* GROUP CARD */
+.gcard{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1.15rem;box-shadow:var(--sh-sm);transition:box-shadow .18s,border-color .18s;display:flex;flex-direction:column}
+.gcard:hover{box-shadow:var(--sh);border-color:var(--border-md)}
+.gcard.full{opacity:.65}
+.gcard.mine{border-color:var(--accent-b)}
+.gtop{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:9px}
+.gname{font-size:15px;font-weight:600}
+.gtopic{font-size:12px;color:var(--muted);margin-top:2px}
+.gdesc{font-size:13px;color:var(--muted);font-style:italic;margin-bottom:9px}
+
+/* BADGE */
+.badge{display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:20px;font-size:12px;font-weight:500;flex-shrink:0}
+.b-open{background:var(--accent-l);color:var(--accent);border:1px solid var(--accent-b)}
+.b-full{background:var(--red-l);color:var(--red);border:1px solid var(--red-b)}
+.b-you{background:var(--blue-l);color:var(--blue);border:1px solid var(--blue-b)}
+
+/* SLOTS */
+.sw{margin:7px 0}
+.sl-lbl{font-size:12px;color:var(--muted);margin-bottom:4px}
+.slots{display:flex;gap:3px}
+.slot{height:5px;border-radius:3px;flex:1;background:var(--border)}
+.slot.on{background:var(--accent)}
+
+/* MEMBERS */
+.mlist{margin:9px 0}
+.mrow{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--border);font-size:13px}
 .mrow:last-child{border-bottom:none}
-.av{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;flex-shrink:0}
-.av0{background:#E1F5EE;color:#085041}.av1{background:#E6F1FB;color:#0C447C}.av2{background:#FAEEDA;color:#633806}.av3{background:#FCEBEB;color:#791F1F}.av4{background:#EEEDFE;color:#3C3489}.av5{background:#FBEAF0;color:#72243E}.av6{background:#EAF3DE;color:#27500A}
-.mn{font-weight:500;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.mid{font-size:11px;color:var(--color-text-secondary)}
-.meta{font-size:11px;color:var(--color-text-secondary);margin-bottom:6px}
-.alert{padding:8px 12px;border-radius:var(--border-radius-md);font-size:13px;margin-bottom:.875rem;display:flex;align-items:center;gap:6px;border:.5px solid}
-.a-ok{background:#E1F5EE;color:#085041;border-color:#5DCAA5}
-.a-err{background:#FCEBEB;color:#791F1F;border-color:#F09595}
-.a-inf{background:#E6F1FB;color:#0C447C;border-color:#85B7EB}
-.a-wrn{background:#FAEEDA;color:#633806;border-color:#EF9F27}
-.fcard{background:var(--color-background-primary);border:.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1.25rem;max-width:520px;margin:0 auto}
-.fcard h2{font-size:17px;font-weight:500;margin-bottom:2px}
-.fsub{font-size:12px;color:var(--color-text-secondary);margin-bottom:1rem}
-.fg{margin-bottom:.75rem}
-.fg label{display:block;font-size:12px;font-weight:500;color:var(--color-text-secondary);margin-bottom:3px}
-.fr2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.sec-lbl{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.7px;color:var(--color-text-secondary);margin-bottom:.75rem}
-hr.div{border:none;border-top:.5px solid var(--color-border-tertiary);margin:.875rem 0}
-.steps{display:flex;gap:5px;margin-bottom:1rem}
-.sd{width:8px;height:8px;border-radius:50%;background:var(--color-border-secondary);transition:background .2s}
-.sd.act{background:#0078d4}.sd.done{background:#1D9E75}
-.review{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:10px 12px;margin-bottom:1rem;font-size:13px}
-.rr{display:flex;gap:8px;padding:3px 0;border-bottom:.5px solid var(--color-border-tertiary);font-size:12px}
-.rr:last-child{border-bottom:none}
-.rk{color:var(--color-text-secondary);min-width:90px;flex-shrink:0}
-.rv{font-weight:500}
-.mcard{background:var(--color-background-primary);border:.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1.25rem;max-width:520px;margin:0 auto}
-.empty{text-align:center;padding:2.5rem 1rem;color:var(--color-text-secondary);grid-column:1/-1}
-.empty i{font-size:36px;opacity:.3;display:block;margin:0 auto 8px}
-.spin{display:inline-block;width:14px;height:14px;border:2px solid var(--color-border-secondary);border-top-color:#0078d4;border-radius:50%;animation:sp .7s linear infinite;vertical-align:-2px;margin-right:3px}
-@keyframes sp{to{transform:rotate(360deg)}}
-.modal-wrap{display:none;min-height:320px;background:rgba(0,0,0,.42);border-radius:var(--border-radius-lg);align-items:center;justify-content:center;padding:1rem;margin-top:.5rem}
-.modal-wrap.open{display:flex}
-.modal{background:var(--color-background-primary);border-radius:var(--border-radius-lg);padding:1.25rem;max-width:390px;width:100%}
-.modal h3{font-size:16px;font-weight:500;margin-bottom:2px}
-.msub{font-size:12px;color:var(--color-text-secondary);margin-bottom:1rem}
-.macts{display:flex;gap:8px;justify-content:flex-end;margin-top:1rem}
+.av{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;flex-shrink:0}
+.av0{background:#e8f2ec;color:#2d5a3d}.av1{background:#eef3fc;color:#1a3a6b}
+.av2{background:#fdf6e8;color:#7a5c1a}.av3{background:#fdf0f0;color:#8b2a2a}
+.av4{background:#f5eefe;color:#5a2d8b}.av5{background:#feeeee;color:#8b2a5a}
+.av6{background:#eefef5;color:#1a6b4a}
+.mi{flex:1;min-width:0}
+.mn{font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mid{font-size:11px;color:var(--muted)}
+
+/* ALERTS */
+.alert{padding:9px 13px;border-radius:var(--rsm);font-size:14px;margin-bottom:.9rem;display:flex;align-items:center;gap:8px;animation:fadeUp .25s ease}
+.alert svg{width:15px;height:15px;flex-shrink:0}
+.al-ok{background:var(--accent-l);color:var(--accent);border:1px solid var(--accent-b)}
+.al-er{background:var(--red-l);color:var(--red);border:1px solid var(--red-b)}
+.al-in{background:var(--blue-l);color:var(--blue);border:1px solid var(--blue-b)}
+.al-wa{background:var(--amber-l);color:var(--amber);border:1px solid var(--amber-b)}
+
+/* LOADING / EMPTY */
+.loading{display:flex;align-items:center;justify-content:center;gap:10px;padding:4rem 1rem;color:var(--muted);font-size:14px;grid-column:1/-1}
+.spin{width:18px;height:18px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite}
+.empty{text-align:center;padding:3.5rem 1rem;color:var(--muted);grid-column:1/-1}
+.empty svg{width:44px;height:44px;opacity:.25;margin:0 auto 10px;display:block}
+
+/* MODAL */
+.moverlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:200;align-items:center;justify-content:center;padding:1rem;backdrop-filter:blur(2px)}
+.moverlay.on{display:flex}
+.modal{background:var(--surface);border-radius:var(--r);padding:1.6rem;max-width:420px;width:100%;box-shadow:0 8px 40px rgba(0,0,0,.18);animation:popIn .2s ease}
+.modal h3{font-family:'DM Serif Display',serif;font-size:19px;font-weight:400;margin-bottom:4px}
+.modal .msub{font-size:13px;color:var(--muted);margin-bottom:1.1rem}
+.mact{display:flex;gap:8px;justify-content:flex-end;margin-top:1.1rem}
+.del-warn{background:var(--red-l);border:1px solid var(--red-b);border-radius:var(--rsm);padding:9px 13px;font-size:13px;color:var(--red);margin-bottom:.9rem}
+
+/* MY CARD */
+.mycard{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1.6rem;box-shadow:var(--sh-sm);max-width:560px;margin:0 auto}
+.mytitle{font-family:'DM Serif Display',serif;font-size:21px;font-weight:400;margin-bottom:4px}
+.mysub{font-size:13px;color:var(--muted);margin-bottom:1.1rem}
+.meta{font-size:12px;color:var(--muted);display:flex;gap:10px;margin-top:6px;flex-wrap:wrap}
+
+/* IMPORT PREVIEW */
+.preview-table-wrap{overflow-x:auto;max-height:300px;overflow-y:auto;border:1px solid var(--border);border-radius:var(--rsm);margin-bottom:1rem}
+.preview-table{width:100%;border-collapse:collapse;font-size:12px}
+.preview-table th{background:var(--accent);color:#fff;padding:6px 10px;text-align:left;white-space:nowrap;position:sticky;top:0}
+.preview-table td{padding:5px 10px;border-bottom:1px solid var(--border);white-space:nowrap}
+.preview-table tr:nth-child(even) td{background:var(--accent-l)}
+.preview-modal{max-width:700px}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes popIn{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+@media(max-width:640px){
+  .stats{grid-template-columns:1fr 1fr}
+  .fgrow{grid-template-columns:1fr}
+  .tab span{display:none}
+  .hdr{padding:0 1rem}
+  .wrap{padding:1.25rem 1rem}
+  .xl-bar .xl-btn span{display:none}
+  .hdr-right{gap:6px}
+}
 </style>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"/>
-<h2 class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)">Assignment group registration — Sunway</h2>
+</head>
+<body>
 
-<div class="hdr">
-  <div class="hdr-icon"><i class="ti ti-clipboard-list" aria-hidden="true"></i></div>
-  <div>
-    <div class="hdr-title">Assignment Group Registration</div>
-    <div style="font-size:11px;color:var(--color-text-secondary)">Sunway University</div>
+<!-- ── HEADER ──────────────────────────────────────────────── -->
+<header class="hdr">
+  <div class="logo">
+    <div class="logo-ic">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle>
+        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+      </svg>
+    </div>
+    <span class="logo-txt">GroupSync</span>
   </div>
-  <div class="hdr-sub" id="sync-lbl"><span class="spin"></span>Loading…</div>
-</div>
 
-<div id="alert-box"></div>
-
-<div class="stats">
-  <div class="stat"><div class="v" id="s-total">—</div><div class="l">Groups</div></div>
-  <div class="stat"><div class="v" id="s-open">—</div><div class="l">Open</div></div>
-  <div class="stat"><div class="v" id="s-members">—</div><div class="l">Members</div></div>
-  <div class="stat"><div class="v" id="s-spots">—</div><div class="l">Spots left</div></div>
-</div>
-
-<div class="tabs">
-  <button class="tab active" onclick="goTab('browse',this)"><i class="ti ti-layout-grid" aria-hidden="true"></i><span>Browse</span></button>
-  <button class="tab" onclick="goTab('register',this)"><i class="ti ti-forms" aria-hidden="true"></i><span>Register</span></button>
-  <button class="tab" onclick="goTab('my',this)"><i class="ti ti-user-circle" aria-hidden="true"></i><span>My group</span></button>
-  <button class="tab" onclick="goTab('sheet',this)"><i class="ti ti-table" aria-hidden="true"></i><span>All responses</span></button>
-</div>
-
-<div id="tab-browse" class="sec on">
-  <div class="frow">
-    <input type="text" id="srch" placeholder="Search groups or members…" oninput="renderGroups()"/>
-    <select id="flt" onchange="renderGroups()"><option value="all">All</option><option value="open">Open</option><option value="full">Full</option></select>
-    <button onclick="loadData(true)"><i class="ti ti-refresh" aria-hidden="true"></i></button>
-  </div>
-  <div class="grid" id="grids"><div class="empty"><i class="ti ti-loader-2" aria-hidden="true"></i><p>Loading…</p></div></div>
-</div>
-
-<div id="tab-register" class="sec">
-  <div class="fcard">
-    <div style="display:flex;align-items:center;gap:7px;margin-bottom:3px">
-      <i class="ti ti-brand-windows" style="font-size:18px;color:#0078d4" aria-hidden="true"></i>
-      <h2 style="margin:0">Group registration form</h2>
+  <div class="hdr-right">
+    <!-- Excel toolbar -->
+    <div class="xl-bar">
+      <button class="xl-btn xl-template" onclick="downloadTemplate()" title="Download blank Excel template">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="12" y1="18" x2="12" y2="12"></line><line x1="9" y1="15" x2="15" y2="15"></line></svg>
+        <span>Template</span>
+      </button>
+      <label class="xl-btn xl-import" title="Import groups from Excel">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+        <span>Import Excel</span>
+        <input type="file" id="xl-file-input" accept=".xlsx,.xls" onchange="importExcel(this)">
+      </label>
+      <button class="xl-btn xl-export" onclick="exportExcel()" title="Export all groups to Excel">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+        <span>Export Excel</span>
+      </button>
     </div>
-    <p class="fsub">Submit your details to create or join a group.</p>
-    <div class="steps" id="step-dots">
-      <div class="sd act"></div><div class="sd"></div><div class="sd"></div>
-    </div>
-
-    <div id="step1">
-      <div class="sec-lbl">Section 1 of 3 — Your details</div>
-      <div class="fg"><label>Full name *</label><input type="text" id="cr-name" placeholder="e.g. Teoh Yun Xin"/></div>
-      <div class="fr2">
-        <div class="fg"><label>Student ID *</label><input type="text" id="cr-id" placeholder="e.g. 22000000"/></div>
-        <div class="fg"><label>Email *</label><input type="email" id="cr-email" placeholder="e.g. yunxint@sunway.edu.my"/></div>
-      </div>
-      <div style="display:flex;justify-content:flex-end"><button onclick="goStep(2)">Next <i class="ti ti-arrow-right" aria-hidden="true"></i></button></div>
-    </div>
-
-    <div id="step2" style="display:none">
-      <div class="sec-lbl">Section 2 of 3 — Action</div>
-      <div class="fg"><label>What would you like to do? *</label>
-        <select id="cr-action" onchange="toggleAction()">
-          <option value="join">Join an existing group</option>
-          <option value="create">Create a new group</option>
-        </select>
-      </div>
-      <div id="join-fields">
-        <div class="fg"><label>Select group *</label>
-          <select id="join-sel"><option value="">— Select —</option></select>
-        </div>
-      </div>
-      <div id="create-fields" style="display:none">
-        <div class="fg"><label>Group name *</label><input type="text" id="gr-name" placeholder="e.g. Team Alpha"/></div>
-        <div class="fg"><label>Max members</label>
-          <select id="gr-max"><option value="6" selected>6 members</option><option value="5">5 members</option><option value="7">7 members</option></select>
-        </div>
-      </div>
-      <div style="display:flex;justify-content:space-between;margin-top:4px">
-        <button onclick="goStep(1)"><i class="ti ti-arrow-left" aria-hidden="true"></i> Back</button>
-        <button onclick="goStep(3)">Next <i class="ti ti-arrow-right" aria-hidden="true"></i></button>
-      </div>
-    </div>
-
-    <div id="step3" style="display:none">
-      <div class="sec-lbl">Section 3 of 3 — Review &amp; submit</div>
-      <div class="review" id="review-box"></div>
-      <div style="display:flex;justify-content:space-between;align-items:center">
-        <button onclick="goStep(2)"><i class="ti ti-arrow-left" aria-hidden="true"></i> Back</button>
-        <button id="sub-btn" onclick="submitForm()"><i class="ti ti-send" aria-hidden="true"></i> Submit response</button>
-      </div>
+    <div class="conn-badge">
+      <div class="conn-dot" id="cdot"></div>
+      <span id="clbl">Demo mode</span>
     </div>
   </div>
-</div>
+</header>
 
-<div id="tab-my" class="sec"><div id="my-content"></div></div>
+<!-- ── MAIN ─────────────────────────────────────────────────── -->
+<div class="wrap">
+  <div class="hero">
+    <h1>Find your team,<br>ace the assignment.</h1>
+    <p>Register a new group or join one. Groups require 5–6 members.<br>
+       Use the Excel buttons to import or export all group data.</p>
+  </div>
 
-<div id="tab-sheet" class="sec">
-  <div style="max-width:680px;margin:0 auto">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.875rem">
-      <div>
-        <div style="font-size:14px;font-weight:500">All responses</div>
-        <div style="font-size:12px;color:var(--color-text-secondary)" id="resp-lbl"></div>
-      </div>
-      <button onclick="loadData(true)"><i class="ti ti-refresh" aria-hidden="true"></i> Refresh</button>
+  <div class="notice" id="demo-notice" style="display: flex;">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+    <div><strong style="display:block;margin-bottom:2px">Demo Mode — Firebase not configured</strong>
+    Data is stored locally. Replace the firebaseConfig values at the top of this file to enable real-time sync. Download the Setup Guide for instructions.</div>
+  </div>
+
+  <div id="abox"></div>
+
+  <div class="stats">
+    <div class="stat"><div class="v" id="s0">26</div><div class="l">Groups</div></div>
+    <div class="stat"><div class="v" id="s1">0</div><div class="l">Open</div></div>
+    <div class="stat"><div class="v" id="s2">151</div><div class="l">Students</div></div>
+    <div class="stat"><div class="v" id="s3">0</div><div class="l">Spots left</div></div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab on" onclick="goTab(&#39;browse&#39;,this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect></svg>
+      <span>Browse Groups</span>
+    </button>
+    <button class="tab" onclick="goTab(&#39;create&#39;,this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>
+      <span>Create Group</span>
+    </button>
+    <button class="tab" onclick="goTab(&#39;my&#39;,this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+      <span>My Registration</span>
+    </button>
+  </div>
+
+  <!-- BROWSE -->
+  <div id="tab-browse" class="sec on">
+    <div class="frow">
+      <input type="text" id="search" placeholder="Search by group name or course…" oninput="renderGroups()">
+      <select id="filter" onchange="renderGroups()">
+        <option value="all">All groups</option>
+        <option value="open">Open only</option>
+        <option value="full">Full groups</option>
+      </select>
     </div>
-    <div id="sheet-tbl" style="overflow-x:auto"></div>
+    <div class="ggrid" id="grid"><div class="gcard full">
+      <div class="gtop">
+        <div><div class="gname">SunwayGpt</div><div class="gtopic">No course set</div></div>
+        <span class="badge b-full">Full</span>
+      </div>
+      
+      <div class="sw"><div class="sl-lbl">6 / 6 members</div><div class="slots"><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div></div></div>
+      <div class="mlist">
+      <div class="mrow">
+        <div class="av av6">CZ</div>
+        <div class="mi"><div class="mn">Choong Zhen Yang</div><div class="mid">23029465</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av2">DC</div>
+        <div class="mi"><div class="mn">Darryl Chan Wei Qian</div><div class="mid">23025265</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av6">SY</div>
+        <div class="mi"><div class="mn">Simon Yap</div><div class="mid">23016678</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av3">LC</div>
+        <div class="mi"><div class="mn">Lam Chee Hiew</div><div class="mid">22035455</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av6">LX</div>
+        <div class="mi"><div class="mn">Lim Xin Hui</div><div class="mid">23137508</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av6">CZ</div>
+        <div class="mi"><div class="mn">Choong Zhen Yang</div><div class="mid">23029465</div></div>
+        
+      </div></div>
+      <div class="meta" style="margin-bottom:4px"><span>just now</span><span>0 spots left</span></div>
+      <button class="btn btn-full" disabled="" style="opacity:.5;cursor:not-allowed">Group is full</button><button class="btn btn-d btn-full" onclick="openDel(&#39;imp_17786565889960.2841185051389994&#39;)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M9 6V4h6v2"></path></svg>
+      Delete group</button>
+    </div><div class="gcard full">
+      <div class="gtop">
+        <div><div class="gname">Last Sem</div><div class="gtopic">No course set</div></div>
+        <span class="badge b-full">Full</span>
+      </div>
+      
+      <div class="sw"><div class="sl-lbl">5 / 5 members</div><div class="slots"><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div></div></div>
+      <div class="mlist">
+      <div class="mrow">
+        <div class="av av3">JO</div>
+        <div class="mi"><div class="mn">JASON ONG YANN JING</div><div class="mid">22034870</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av2">LL</div>
+        <div class="mi"><div class="mn">Lim Li Kein</div><div class="mid">22054464</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av6">HH</div>
+        <div class="mi"><div class="mn">Hii Hieng Nguong</div><div class="mid">22014385</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av1">RR</div>
+        <div class="mi"><div class="mn">RUBEN RAJ A/L KARTHIGASU</div><div class="mid">22066476</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av2">LW</div>
+        <div class="mi"><div class="mn">Lee Wen Zheh</div><div class="mid">23095466</div></div>
+        
+      </div></div>
+      <div class="meta" style="margin-bottom:4px"><span>just now</span><span>0 spots left</span></div>
+      <button class="btn btn-full" disabled="" style="opacity:.5;cursor:not-allowed">Group is full</button><button class="btn btn-d btn-full" onclick="openDel(&#39;imp_17786565889960.5656341916603653&#39;)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M9 6V4h6v2"></path></svg>
+      Delete group</button>
+    </div><div class="gcard full">
+      <div class="gtop">
+        <div><div class="gname">Deep Fried Search</div><div class="gtopic">No course set</div></div>
+        <span class="badge b-full">Full</span>
+      </div>
+      
+      <div class="sw"><div class="sl-lbl">6 / 6 members</div><div class="slots"><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div></div></div>
+      <div class="mlist">
+      <div class="mrow">
+        <div class="av av0">EC</div>
+        <div class="mi"><div class="mn">Esther Chan Lee Hsuen</div><div class="mid">230330887</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av6">TY</div>
+        <div class="mi"><div class="mn">Teoh Yan Ying</div><div class="mid">23097835</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av2">CW</div>
+        <div class="mi"><div class="mn">Chong Wen Hui</div><div class="mid">23096183</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av4">CS</div>
+        <div class="mi"><div class="mn">Chen Shin Cheng</div><div class="mid">23097033</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av3">LB</div>
+        <div class="mi"><div class="mn">Lee Bi Ying</div><div class="mid">23069115</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av0">CP</div>
+        <div class="mi"><div class="mn">Cham Poh Yee</div><div class="mid">23068711</div></div>
+        
+      </div></div>
+      <div class="meta" style="margin-bottom:4px"><span>just now</span><span>0 spots left</span></div>
+      <button class="btn btn-full" disabled="" style="opacity:.5;cursor:not-allowed">Group is full</button><button class="btn btn-d btn-full" onclick="openDel(&#39;imp_17786565889960.5254608000213268&#39;)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M9 6V4h6v2"></path></svg>
+      Delete group</button>
+    </div><div class="gcard full">
+      <div class="gtop">
+        <div><div class="gname">Idk</div><div class="gtopic">No course set</div></div>
+        <span class="badge b-full">Full</span>
+      </div>
+      
+      <div class="sw"><div class="sl-lbl">6 / 6 members</div><div class="slots"><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div></div></div>
+      <div class="mlist">
+      <div class="mrow">
+        <div class="av av5">LY</div>
+        <div class="mi"><div class="mn">Lee Yi Lam</div><div class="mid">25010083</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av1">VY</div>
+        <div class="mi"><div class="mn">Voon Yik Hui</div><div class="mid">22010425</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av2">OW</div>
+        <div class="mi"><div class="mn">Ong Wei Min</div><div class="mid">22055859</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av3">NJ</div>
+        <div class="mi"><div class="mn">Ng Jia San</div><div class="mid">25012410</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av5">CK</div>
+        <div class="mi"><div class="mn">Chia Kai Hong</div><div class="mid">23019862</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av5">NF</div>
+        <div class="mi"><div class="mn">Nurish Farisya binti Mohammad Fadzil</div><div class="mid">23101124</div></div>
+        
+      </div></div>
+      <div class="meta" style="margin-bottom:4px"><span>just now</span><span>0 spots left</span></div>
+      <button class="btn btn-full" disabled="" style="opacity:.5;cursor:not-allowed">Group is full</button><button class="btn btn-d btn-full" onclick="openDel(&#39;imp_17786565889960.46212830109617953&#39;)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M9 6V4h6v2"></path></svg>
+      Delete group</button>
+    </div><div class="gcard full">
+      <div class="gtop">
+        <div><div class="gname">Practical 15 Group 1</div><div class="gtopic">No course set</div></div>
+        <span class="badge b-full">Full</span>
+      </div>
+      
+      <div class="sw"><div class="sl-lbl">6 / 6 members</div><div class="slots"><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div></div></div>
+      <div class="mlist">
+      <div class="mrow">
+        <div class="av av4">CK</div>
+        <div class="mi"><div class="mn">Caryl Kong Khoy Yee</div><div class="mid">22070098</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av0">ML</div>
+        <div class="mi"><div class="mn">Michelle Lim Chieh Yi</div><div class="mid">22075881</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av0">PW</div>
+        <div class="mi"><div class="mn">Phoebe Wong Wei Yen</div><div class="mid">22075659</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av5">TS</div>
+        <div class="mi"><div class="mn">Tan Sim May</div><div class="mid">22089585</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av1">TR</div>
+        <div class="mi"><div class="mn">Tay Ri Anne</div><div class="mid">22055164</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av0">YY</div>
+        <div class="mi"><div class="mn">Yeap Yu Lin</div><div class="mid">22088843</div></div>
+        
+      </div></div>
+      <div class="meta" style="margin-bottom:4px"><span>just now</span><span>0 spots left</span></div>
+      <button class="btn btn-full" disabled="" style="opacity:.5;cursor:not-allowed">Group is full</button><button class="btn btn-d btn-full" onclick="openDel(&#39;imp_17786565889960.35729427774909295&#39;)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M9 6V4h6v2"></path></svg>
+      Delete group</button>
+    </div><div class="gcard full">
+      <div class="gtop">
+        <div><div class="gname">null</div><div class="gtopic">No course set</div></div>
+        <span class="badge b-full">Full</span>
+      </div>
+      
+      <div class="sw"><div class="sl-lbl">6 / 6 members</div><div class="slots"><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div></div></div>
+      <div class="mlist">
+      <div class="mrow">
+        <div class="av av2">TK</div>
+        <div class="mi"><div class="mn">Tan Kok Feng</div><div class="mid">23015811</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av1">WW</div>
+        <div class="mi"><div class="mn">Wong Wen Ru</div><div class="mid">23020621</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av5">WY</div>
+        <div class="mi"><div class="mn">Wong Yu Xuan</div><div class="mid">24020810</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av6">CS</div>
+        <div class="mi"><div class="mn">Ch’ng Shen Ming</div><div class="mid">24018566</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av5">YY</div>
+        <div class="mi"><div class="mn">Yong Yung Jian</div><div class="mid">24028748</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av2">TK</div>
+        <div class="mi"><div class="mn">Tan Kok Feng</div><div class="mid">23015811</div></div>
+        
+      </div></div>
+      <div class="meta" style="margin-bottom:4px"><span>just now</span><span>0 spots left</span></div>
+      <button class="btn btn-full" disabled="" style="opacity:.5;cursor:not-allowed">Group is full</button><button class="btn btn-d btn-full" onclick="openDel(&#39;imp_17786565889960.9503132167972675&#39;)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M9 6V4h6v2"></path></svg>
+      Delete group</button>
+    </div><div class="gcard full">
+      <div class="gtop">
+        <div><div class="gname">6 Humans</div><div class="gtopic">No course set</div></div>
+        <span class="badge b-full">Full</span>
+      </div>
+      
+      <div class="sw"><div class="sl-lbl">6 / 6 members</div><div class="slots"><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div></div></div>
+      <div class="mlist">
+      <div class="mrow">
+        <div class="av av0">RS</div>
+        <div class="mi"><div class="mn">Roshan Sivakumar</div><div class="mid">23028285</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av4">LJ</div>
+        <div class="mi"><div class="mn">Lee Jang Jou</div><div class="mid">21099502</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av2">TY</div>
+        <div class="mi"><div class="mn">Thong Yong Ru</div><div class="mid">23021272</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av4">LH</div>
+        <div class="mi"><div class="mn">Lim Han Xuan</div><div class="mid">22120158</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av4">GT</div>
+        <div class="mi"><div class="mn">Ginnie Thai Junyi</div><div class="mid">23089519</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av6">SW</div>
+        <div class="mi"><div class="mn">Soh Wei Wen</div><div class="mid">23015118</div></div>
+        
+      </div></div>
+      <div class="meta" style="margin-bottom:4px"><span>just now</span><span>0 spots left</span></div>
+      <button class="btn btn-full" disabled="" style="opacity:.5;cursor:not-allowed">Group is full</button><button class="btn btn-d btn-full" onclick="openDel(&#39;imp_17786565889960.9953860235342041&#39;)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M9 6V4h6v2"></path></svg>
+      Delete group</button>
+    </div><div class="gcard full">
+      <div class="gtop">
+        <div><div class="gname">Nini and the gang</div><div class="gtopic">No course set</div></div>
+        <span class="badge b-full">Full</span>
+      </div>
+      
+      <div class="sw"><div class="sl-lbl">6 / 6 members</div><div class="slots"><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div></div></div>
+      <div class="mlist">
+      <div class="mrow">
+        <div class="av av1">LS</div>
+        <div class="mi"><div class="mn">Loke Sheng Heng</div><div class="mid">22081376</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av1">YK</div>
+        <div class="mi"><div class="mn">Yong Kar Yee</div><div class="mid">22057749</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av3">CG</div>
+        <div class="mi"><div class="mn">Chua Guangrou</div><div class="mid">22086037</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av6">YY</div>
+        <div class="mi"><div class="mn">Yap Yung Jun</div><div class="mid">25048612</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av2">WX</div>
+        <div class="mi"><div class="mn">Wong Xu Liang</div><div class="mid">25018565</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av0">LZ</div>
+        <div class="mi"><div class="mn">Loo ZiXian</div><div class="mid">22007801</div></div>
+        
+      </div></div>
+      <div class="meta" style="margin-bottom:4px"><span>just now</span><span>0 spots left</span></div>
+      <button class="btn btn-full" disabled="" style="opacity:.5;cursor:not-allowed">Group is full</button><button class="btn btn-d btn-full" onclick="openDel(&#39;imp_17786565889960.9730066815811467&#39;)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M9 6V4h6v2"></path></svg>
+      Delete group</button>
+    </div><div class="gcard full">
+      <div class="gtop">
+        <div><div class="gname">group9</div><div class="gtopic">No course set</div></div>
+        <span class="badge b-full">Full</span>
+      </div>
+      
+      <div class="sw"><div class="sl-lbl">6 / 6 members</div><div class="slots"><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div></div></div>
+      <div class="mlist">
+      <div class="mrow">
+        <div class="av av4">LY</div>
+        <div class="mi"><div class="mn">Lee Yee Kang</div><div class="mid">24029084</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av5">LW</div>
+        <div class="mi"><div class="mn">Lee Wie Jie</div><div class="mid">24033474</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av5">LJ</div>
+        <div class="mi"><div class="mn">Liang Jin Yee</div><div class="mid">24023285</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av5">SW</div>
+        <div class="mi"><div class="mn">Soon Wei Zhe</div><div class="mid">24024523</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av5">ZW</div>
+        <div class="mi"><div class="mn">Zheng Wei Xuen</div><div class="mid">22007827</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av2">CZ</div>
+        <div class="mi"><div class="mn">Chang Zi Kai</div><div class="mid">24027302</div></div>
+        
+      </div></div>
+      <div class="meta" style="margin-bottom:4px"><span>just now</span><span>0 spots left</span></div>
+      <button class="btn btn-full" disabled="" style="opacity:.5;cursor:not-allowed">Group is full</button><button class="btn btn-d btn-full" onclick="openDel(&#39;imp_17786565889960.12216546657562755&#39;)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M9 6V4h6v2"></path></svg>
+      Delete group</button>
+    </div><div class="gcard full">
+      <div class="gtop">
+        <div><div class="gname">Six_Seven</div><div class="gtopic">No course set</div></div>
+        <span class="badge b-full">Full</span>
+      </div>
+      
+      <div class="sw"><div class="sl-lbl">5 / 5 members</div><div class="slots"><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div></div></div>
+      <div class="mlist">
+      <div class="mrow">
+        <div class="av av1">YH</div>
+        <div class="mi"><div class="mn">Yew Hao En</div><div class="mid">22070452</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av1">LC</div>
+        <div class="mi"><div class="mn">Lee Chun Kit</div><div class="mid">22070593</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av1">LJ</div>
+        <div class="mi"><div class="mn">Lee Jun Yin</div><div class="mid">22060651</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av1">CZ</div>
+        <div class="mi"><div class="mn">Chan Zhien Yet</div><div class="mid">22078927</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av1">RC</div>
+        <div class="mi"><div class="mn">Ryan Choo Jun-Leng</div><div class="mid">22070247</div></div>
+        
+      </div></div>
+      <div class="meta" style="margin-bottom:4px"><span>just now</span><span>0 spots left</span></div>
+      <button class="btn btn-full" disabled="" style="opacity:.5;cursor:not-allowed">Group is full</button><button class="btn btn-d btn-full" onclick="openDel(&#39;imp_17786565889960.7662137475169286&#39;)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M9 6V4h6v2"></path></svg>
+      Delete group</button>
+    </div><div class="gcard full">
+      <div class="gtop">
+        <div><div class="gname">Hopperssssss</div><div class="gtopic">No course set</div></div>
+        <span class="badge b-full">Full</span>
+      </div>
+      
+      <div class="sw"><div class="sl-lbl">6 / 6 members</div><div class="slots"><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div></div></div>
+      <div class="mlist">
+      <div class="mrow">
+        <div class="av av1">TY</div>
+        <div class="mi"><div class="mn">Tan Yuett Ning</div><div class="mid">22057954</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av6">TW</div>
+        <div class="mi"><div class="mn">Tan Wee Jin</div><div class="mid">22057384</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av6">LS</div>
+        <div class="mi"><div class="mn">Liew Sau Yang</div><div class="mid">22062475</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av3">OV</div>
+        <div class="mi"><div class="mn">Oh Voon Keat</div><div class="mid">22064091</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av3">ET</div>
+        <div class="mi"><div class="mn">Edward Thong Jia Ming</div><div class="mid">22055818</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av5">TZ</div>
+        <div class="mi"><div class="mn">Tang Zewei</div><div class="mid">22106256</div></div>
+        
+      </div></div>
+      <div class="meta" style="margin-bottom:4px"><span>just now</span><span>0 spots left</span></div>
+      <button class="btn btn-full" disabled="" style="opacity:.5;cursor:not-allowed">Group is full</button><button class="btn btn-d btn-full" onclick="openDel(&#39;imp_17786565889960.8537306328585019&#39;)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M9 6V4h6v2"></path></svg>
+      Delete group</button>
+    </div><div class="gcard full">
+      <div class="gtop">
+        <div><div class="gname">Ai Slaps</div><div class="gtopic">No course set</div></div>
+        <span class="badge b-full">Full</span>
+      </div>
+      
+      <div class="sw"><div class="sl-lbl">6 / 6 members</div><div class="slots"><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div></div></div>
+      <div class="mlist">
+      <div class="mrow">
+        <div class="av av6">LL</div>
+        <div class="mi"><div class="mn">Lionel Lim Ye Sheng</div><div class="mid">22086540</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av6">LC</div>
+        <div class="mi"><div class="mn">Lim Chun Yeh</div><div class="mid">22073233</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av4">HM</div>
+        <div class="mi"><div class="mn">Hoang Minh Chau</div><div class="mid">22007702</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av1">TJ</div>
+        <div class="mi"><div class="mn">Thum Ji Meng</div><div class="mid">22082341</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av5">JW</div>
+        <div class="mi"><div class="mn">Jaimelynn Wong Shin Yew</div><div class="mid">23113814</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av4">FN</div>
+        <div class="mi"><div class="mn">Fathima Nuha Nizar</div><div class="mid">23102676</div></div>
+        
+      </div></div>
+      <div class="meta" style="margin-bottom:4px"><span>just now</span><span>0 spots left</span></div>
+      <button class="btn btn-full" disabled="" style="opacity:.5;cursor:not-allowed">Group is full</button><button class="btn btn-d btn-full" onclick="openDel(&#39;imp_17786565889960.8130095252245618&#39;)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M9 6V4h6v2"></path></svg>
+      Delete group</button>
+    </div><div class="gcard full">
+      <div class="gtop">
+        <div><div class="gname">The Six Watermelons</div><div class="gtopic">No course set</div></div>
+        <span class="badge b-full">Full</span>
+      </div>
+      
+      <div class="sw"><div class="sl-lbl">6 / 6 members</div><div class="slots"><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div></div></div>
+      <div class="mlist">
+      <div class="mrow">
+        <div class="av av5">GW</div>
+        <div class="mi"><div class="mn">Goo Weng Xi</div><div class="mid">22034987</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av2">TY</div>
+        <div class="mi"><div class="mn">Tham Yan Qi</div><div class="mid">22055719</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av1">LP</div>
+        <div class="mi"><div class="mn">Lim Phin Han</div><div class="mid">22052898</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av2">CK</div>
+        <div class="mi"><div class="mn">Chia Kah Yan</div><div class="mid">23096688</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av1">VL</div>
+        <div class="mi"><div class="mn">Victoria Liu Xiao Zhen</div><div class="mid">22065676</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av6">TX</div>
+        <div class="mi"><div class="mn">Tai Xiu Yiu</div><div class="mid">22038756</div></div>
+        
+      </div></div>
+      <div class="meta" style="margin-bottom:4px"><span>just now</span><span>0 spots left</span></div>
+      <button class="btn btn-full" disabled="" style="opacity:.5;cursor:not-allowed">Group is full</button><button class="btn btn-d btn-full" onclick="openDel(&#39;imp_17786565889960.8416681480648421&#39;)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M9 6V4h6v2"></path></svg>
+      Delete group</button>
+    </div><div class="gcard full">
+      <div class="gtop">
+        <div><div class="gname">Giggle</div><div class="gtopic">No course set</div></div>
+        <span class="badge b-full">Full</span>
+      </div>
+      
+      <div class="sw"><div class="sl-lbl">5 / 5 members</div><div class="slots"><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div></div></div>
+      <div class="mlist">
+      <div class="mrow">
+        <div class="av av2">WH</div>
+        <div class="mi"><div class="mn">Wong Hui San</div><div class="mid">22034540</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av6">AW</div>
+        <div class="mi"><div class="mn">Ayu Wen Li</div><div class="mid">22017867</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av4">KA</div>
+        <div class="mi"><div class="mn">Keertana A/P Subramaniam</div><div class="mid">23109614</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av4">SQ</div>
+        <div class="mi"><div class="mn">Siow Qi Yung</div><div class="mid">22053037</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av4">VD</div>
+        <div class="mi"><div class="mn">Vidhipriya Devi Pokiri</div><div class="mid">23057953</div></div>
+        
+      </div></div>
+      <div class="meta" style="margin-bottom:4px"><span>just now</span><span>0 spots left</span></div>
+      <button class="btn btn-full" disabled="" style="opacity:.5;cursor:not-allowed">Group is full</button><button class="btn btn-d btn-full" onclick="openDel(&#39;imp_17786565889960.2964530371867119&#39;)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M9 6V4h6v2"></path></svg>
+      Delete group</button>
+    </div><div class="gcard full">
+      <div class="gtop">
+        <div><div class="gname">AI-mazing</div><div class="gtopic">No course set</div></div>
+        <span class="badge b-full">Full</span>
+      </div>
+      
+      <div class="sw"><div class="sl-lbl">6 / 6 members</div><div class="slots"><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div></div></div>
+      <div class="mlist">
+      <div class="mrow">
+        <div class="av av1">AA</div>
+        <div class="mi"><div class="mn">Arun A/L Thana Balan</div><div class="mid">22092738</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av1">OT</div>
+        <div class="mi"><div class="mn">Oscar Tan Tong Sing</div><div class="mid">22063176</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av6">KQ</div>
+        <div class="mi"><div class="mn">Kua Qian Ru</div><div class="mid">22073522</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av0">AT</div>
+        <div class="mi"><div class="mn">Amberly Teoh Ke Wei</div><div class="mid">22094775</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av2">TE</div>
+        <div class="mi"><div class="mn">Tan Ee Yern</div><div class="mid">22101877</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av0">CY</div>
+        <div class="mi"><div class="mn">Chan Yong Hang</div><div class="mid">23030992</div></div>
+        
+      </div></div>
+      <div class="meta" style="margin-bottom:4px"><span>just now</span><span>0 spots left</span></div>
+      <button class="btn btn-full" disabled="" style="opacity:.5;cursor:not-allowed">Group is full</button><button class="btn btn-d btn-full" onclick="openDel(&#39;imp_17786565889960.7634512615511295&#39;)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M9 6V4h6v2"></path></svg>
+      Delete group</button>
+    </div><div class="gcard full">
+      <div class="gtop">
+        <div><div class="gname">Wo AI Ni</div><div class="gtopic">No course set</div></div>
+        <span class="badge b-full">Full</span>
+      </div>
+      
+      <div class="sw"><div class="sl-lbl">6 / 6 members</div><div class="slots"><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div></div></div>
+      <div class="mlist">
+      <div class="mrow">
+        <div class="av av1">CY</div>
+        <div class="mi"><div class="mn">Chin Yung Xuan</div><div class="mid">22057590</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av5">AP</div>
+        <div class="mi"><div class="mn">Albert Pang Kian Cheng</div><div class="mid">22040943</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av2">EZ</div>
+        <div class="mi"><div class="mn">Eng Zheng Yu</div><div class="mid">22070544</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av4">TK</div>
+        <div class="mi"><div class="mn">Tye Khan Wei</div><div class="mid">22063051</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av3">AL</div>
+        <div class="mi"><div class="mn">Addison Loo Jie Wen</div><div class="mid">22081293</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av2">TY</div>
+        <div class="mi"><div class="mn">Tan Yann Bin</div><div class="mid">22071674</div></div>
+        
+      </div></div>
+      <div class="meta" style="margin-bottom:4px"><span>just now</span><span>0 spots left</span></div>
+      <button class="btn btn-full" disabled="" style="opacity:.5;cursor:not-allowed">Group is full</button><button class="btn btn-d btn-full" onclick="openDel(&#39;imp_17786565889960.17882152936682738&#39;)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M9 6V4h6v2"></path></svg>
+      Delete group</button>
+    </div><div class="gcard full">
+      <div class="gtop">
+        <div><div class="gname">SunGPT</div><div class="gtopic">No course set</div></div>
+        <span class="badge b-full">Full</span>
+      </div>
+      
+      <div class="sw"><div class="sl-lbl">6 / 6 members</div><div class="slots"><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div></div></div>
+      <div class="mlist">
+      <div class="mrow">
+        <div class="av av3">CH</div>
+        <div class="mi"><div class="mn">Chu Hong Wu</div><div class="mid">24029308</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av4">LZ</div>
+        <div class="mi"><div class="mn">Lau Zi Yi</div><div class="mid">24021891</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av3">FL</div>
+        <div class="mi"><div class="mn">Frederich Leong Heng Hao</div><div class="mid">24021461</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av6">SK</div>
+        <div class="mi"><div class="mn">Swee Kae Xuan</div><div class="mid">24017642</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av2">AB</div>
+        <div class="mi"><div class="mn">Afiq Bin Nor Azlan</div><div class="mid">24039638</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av6">GW</div>
+        <div class="mi"><div class="mn">Gan Wei Jun</div><div class="mid">24023590</div></div>
+        
+      </div></div>
+      <div class="meta" style="margin-bottom:4px"><span>just now</span><span>0 spots left</span></div>
+      <button class="btn btn-full" disabled="" style="opacity:.5;cursor:not-allowed">Group is full</button><button class="btn btn-d btn-full" onclick="openDel(&#39;imp_17786565889960.7677553115805039&#39;)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M9 6V4h6v2"></path></svg>
+      Delete group</button>
+    </div><div class="gcard full">
+      <div class="gtop">
+        <div><div class="gname">Cooked</div><div class="gtopic">No course set</div></div>
+        <span class="badge b-full">Full</span>
+      </div>
+      
+      <div class="sw"><div class="sl-lbl">5 / 5 members</div><div class="slots"><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div></div></div>
+      <div class="mlist">
+      <div class="mrow">
+        <div class="av av1">OX</div>
+        <div class="mi"><div class="mn">Ong Xin Rou</div><div class="mid">23088479</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av5">CW</div>
+        <div class="mi"><div class="mn">Cindy Wong</div><div class="mid">22112908</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av1">JB</div>
+        <div class="mi"><div class="mn">Janet Beh Jing Le</div><div class="mid">24121097</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av6">LJ</div>
+        <div class="mi"><div class="mn">Lee Jean Suen</div><div class="mid">24040644</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av4">JW</div>
+        <div class="mi"><div class="mn">Jesslyn Wong Mei Chui</div><div class="mid">23029804</div></div>
+        
+      </div></div>
+      <div class="meta" style="margin-bottom:4px"><span>just now</span><span>0 spots left</span></div>
+      <button class="btn btn-full" disabled="" style="opacity:.5;cursor:not-allowed">Group is full</button><button class="btn btn-d btn-full" onclick="openDel(&#39;imp_17786565889960.42752214848924863&#39;)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M9 6V4h6v2"></path></svg>
+      Delete group</button>
+    </div><div class="gcard full">
+      <div class="gtop">
+        <div><div class="gname">AI-67</div><div class="gtopic">No course set</div></div>
+        <span class="badge b-full">Full</span>
+      </div>
+      
+      <div class="sw"><div class="sl-lbl">6 / 6 members</div><div class="slots"><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div></div></div>
+      <div class="mlist">
+      <div class="mrow">
+        <div class="av av3">LS</div>
+        <div class="mi"><div class="mn">Lew Shang Hao</div><div class="mid">22055362</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av5">KW</div>
+        <div class="mi"><div class="mn">Kong Wei Theng</div><div class="mid">22077184</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av6">FY</div>
+        <div class="mi"><div class="mn">Foo Yew Jo</div><div class="mid">22054290</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av0">WZ</div>
+        <div class="mi"><div class="mn">Wong Zi Yang</div><div class="mid">22090336</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av0">LZ</div>
+        <div class="mi"><div class="mn">Lee Zong Xun</div><div class="mid">22083844</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av2">BW</div>
+        <div class="mi"><div class="mn">Bernice Wong Jian Xuan</div><div class="mid">22056998</div></div>
+        
+      </div></div>
+      <div class="meta" style="margin-bottom:4px"><span>just now</span><span>0 spots left</span></div>
+      <button class="btn btn-full" disabled="" style="opacity:.5;cursor:not-allowed">Group is full</button><button class="btn btn-d btn-full" onclick="openDel(&#39;imp_17786565889960.5102174297222389&#39;)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M9 6V4h6v2"></path></svg>
+      Delete group</button>
+    </div><div class="gcard full">
+      <div class="gtop">
+        <div><div class="gname">AI AI Captain</div><div class="gtopic">No course set</div></div>
+        <span class="badge b-full">Full</span>
+      </div>
+      
+      <div class="sw"><div class="sl-lbl">6 / 6 members</div><div class="slots"><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div></div></div>
+      <div class="mlist">
+      <div class="mrow">
+        <div class="av av6">SS</div>
+        <div class="mi"><div class="mn">Soong Shuki</div><div class="mid">23105059</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av2">CY</div>
+        <div class="mi"><div class="mn">Choong Yuk Yan</div><div class="mid">23101694</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av3">JN</div>
+        <div class="mi"><div class="mn">Jacey Ng Siew Fang</div><div class="mid">22050587</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av4">OC</div>
+        <div class="mi"><div class="mn">Oh Chen Wei</div><div class="mid">22043574</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av6">SS</div>
+        <div class="mi"><div class="mn">Soong Shuki</div><div class="mid">23105059</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av5">JN</div>
+        <div class="mi"><div class="mn">Joshua Ng Wei Hong</div><div class="mid">22063747</div></div>
+        
+      </div></div>
+      <div class="meta" style="margin-bottom:4px"><span>just now</span><span>0 spots left</span></div>
+      <button class="btn btn-full" disabled="" style="opacity:.5;cursor:not-allowed">Group is full</button><button class="btn btn-d btn-full" onclick="openDel(&#39;imp_17786565889960.36019008399947117&#39;)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M9 6V4h6v2"></path></svg>
+      Delete group</button>
+    </div><div class="gcard full">
+      <div class="gtop">
+        <div><div class="gname">powerpuff</div><div class="gtopic">No course set</div></div>
+        <span class="badge b-full">Full</span>
+      </div>
+      
+      <div class="sw"><div class="sl-lbl">6 / 6 members</div><div class="slots"><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div></div></div>
+      <div class="mlist">
+      <div class="mrow">
+        <div class="av av4">RS</div>
+        <div class="mi"><div class="mn">Rhianne See Tho</div><div class="mid">22035273</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av0">CH</div>
+        <div class="mi"><div class="mn">Chan Hui Qi</div><div class="mid">22076673</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av0">CL</div>
+        <div class="mi"><div class="mn">Chloe Low Hoy Yi</div><div class="mid">22074991</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av5">CC</div>
+        <div class="mi"><div class="mn">Clarine Chew Kai Xin</div><div class="mid">23108251</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av0">PX</div>
+        <div class="mi"><div class="mn">Pang Xiao Qi</div><div class="mid">22054159</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av0">YZ</div>
+        <div class="mi"><div class="mn">Yap Zhi Xuan</div><div class="mid">22067284</div></div>
+        
+      </div></div>
+      <div class="meta" style="margin-bottom:4px"><span>just now</span><span>0 spots left</span></div>
+      <button class="btn btn-full" disabled="" style="opacity:.5;cursor:not-allowed">Group is full</button><button class="btn btn-d btn-full" onclick="openDel(&#39;imp_17786565889960.870488433767434&#39;)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M9 6V4h6v2"></path></svg>
+      Delete group</button>
+    </div><div class="gcard full">
+      <div class="gtop">
+        <div><div class="gname">Breaking Bank</div><div class="gtopic">No course set</div></div>
+        <span class="badge b-full">Full</span>
+      </div>
+      
+      <div class="sw"><div class="sl-lbl">6 / 6 members</div><div class="slots"><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div></div></div>
+      <div class="mlist">
+      <div class="mrow">
+        <div class="av av1">TZ</div>
+        <div class="mi"><div class="mn">Teo Zen Ben</div><div class="mid">22120679</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av4">JT</div>
+        <div class="mi"><div class="mn">Jeanette Tan En Jie</div><div class="mid">23035173</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av1">NA</div>
+        <div class="mi"><div class="mn">Nyow An Qi</div><div class="mid">23026693</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av6">TA</div>
+        <div class="mi"><div class="mn">Thevesh A/L Chandran</div><div class="mid">24017717</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av0">LZ</div>
+        <div class="mi"><div class="mn">Lau Zheng Hao</div><div class="mid">23137771</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av1">TZ</div>
+        <div class="mi"><div class="mn">Teo Zen Ben</div><div class="mid">22120679</div></div>
+        
+      </div></div>
+      <div class="meta" style="margin-bottom:4px"><span>just now</span><span>0 spots left</span></div>
+      <button class="btn btn-full" disabled="" style="opacity:.5;cursor:not-allowed">Group is full</button><button class="btn btn-d btn-full" onclick="openDel(&#39;imp_17786565889960.8367372775833274&#39;)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M9 6V4h6v2"></path></svg>
+      Delete group</button>
+    </div><div class="gcard full">
+      <div class="gtop">
+        <div><div class="gname">ChatGPT</div><div class="gtopic">No course set</div></div>
+        <span class="badge b-full">Full</span>
+      </div>
+      
+      <div class="sw"><div class="sl-lbl">5 / 5 members</div><div class="slots"><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div></div></div>
+      <div class="mlist">
+      <div class="mrow">
+        <div class="av av2">CN</div>
+        <div class="mi"><div class="mn">Colin Ng Mung Chun</div><div class="mid">22070007</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av3">HM</div>
+        <div class="mi"><div class="mn">Ho Mun Wai</div><div class="mid">22067292</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av1">BC</div>
+        <div class="mi"><div class="mn">Bryan Chung Zhi Wei</div><div class="mid">22051502</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av1">KT</div>
+        <div class="mi"><div class="mn">Koh Ti Sun</div><div class="mid">22086607</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av6">LY</div>
+        <div class="mi"><div class="mn">Lim Yit Wei</div><div class="mid">22076244</div></div>
+        
+      </div></div>
+      <div class="meta" style="margin-bottom:4px"><span>just now</span><span>0 spots left</span></div>
+      <button class="btn btn-full" disabled="" style="opacity:.5;cursor:not-allowed">Group is full</button><button class="btn btn-d btn-full" onclick="openDel(&#39;imp_17786565889960.21157248990926425&#39;)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M9 6V4h6v2"></path></svg>
+      Delete group</button>
+    </div><div class="gcard full">
+      <div class="gtop">
+        <div><div class="gname">AI Lovers</div><div class="gtopic">No course set</div></div>
+        <span class="badge b-full">Full</span>
+      </div>
+      
+      <div class="sw"><div class="sl-lbl">6 / 6 members</div><div class="slots"><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div></div></div>
+      <div class="mlist">
+      <div class="mrow">
+        <div class="av av2">JT</div>
+        <div class="mi"><div class="mn">Jaeden Ting Yiyong</div><div class="mid">23009798</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av4">EL</div>
+        <div class="mi"><div class="mn">Evan Lo Jen Zhen</div><div class="mid">23026842</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av5">WP</div>
+        <div class="mi"><div class="mn">Wai Phyo Hein</div><div class="mid">22108765</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av1">CS</div>
+        <div class="mi"><div class="mn">Chin Shaw Zhuong</div><div class="mid">24153058</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av3">SC</div>
+        <div class="mi"><div class="mn">Sohom Chakma</div><div class="mid">22107791</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av4">RT</div>
+        <div class="mi"><div class="mn">Raymond Tham Chun Keet</div><div class="mid">19010461</div></div>
+        
+      </div></div>
+      <div class="meta" style="margin-bottom:4px"><span>just now</span><span>0 spots left</span></div>
+      <button class="btn btn-full" disabled="" style="opacity:.5;cursor:not-allowed">Group is full</button><button class="btn btn-d btn-full" onclick="openDel(&#39;imp_17786565889960.2763268502876023&#39;)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M9 6V4h6v2"></path></svg>
+      Delete group</button>
+    </div><div class="gcard full">
+      <div class="gtop">
+        <div><div class="gname">Chatgpt</div><div class="gtopic">No course set</div></div>
+        <span class="badge b-full">Full</span>
+      </div>
+      
+      <div class="sw"><div class="sl-lbl">6 / 6 members</div><div class="slots"><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div></div></div>
+      <div class="mlist">
+      <div class="mrow">
+        <div class="av av6">IR</div>
+        <div class="mi"><div class="mn">Inez Reyhanz Binti Khaeril Zach</div><div class="mid">16082398</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av3">KD</div>
+        <div class="mi"><div class="mn">Keshna Devi Goorah</div><div class="mid">24017675</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av0">TP</div>
+        <div class="mi"><div class="mn">Teoh Pei Ying</div><div class="mid">23137714</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av6">CM</div>
+        <div class="mi"><div class="mn">Chooi Mei Yin</div><div class="mid">23013634</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av3">CS</div>
+        <div class="mi"><div class="mn">Charissa Santos Cruz</div><div class="mid">23016199</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av6">HJ</div>
+        <div class="mi"><div class="mn">Ho Jia Mei</div><div class="mid">24005688</div></div>
+        
+      </div></div>
+      <div class="meta" style="margin-bottom:4px"><span>just now</span><span>0 spots left</span></div>
+      <button class="btn btn-full" disabled="" style="opacity:.5;cursor:not-allowed">Group is full</button><button class="btn btn-d btn-full" onclick="openDel(&#39;imp_17786565889960.7393423278525196&#39;)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M9 6V4h6v2"></path></svg>
+      Delete group</button>
+    </div><div class="gcard full">
+      <div class="gtop">
+        <div><div class="gname">Nexora</div><div class="gtopic">No course set</div></div>
+        <span class="badge b-full">Full</span>
+      </div>
+      
+      <div class="sw"><div class="sl-lbl">6 / 6 members</div><div class="slots"><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div><div class="slot on"></div></div></div>
+      <div class="mlist">
+      <div class="mrow">
+        <div class="av av5">NS</div>
+        <div class="mi"><div class="mn">Ng Shi Kee</div><div class="mid">23062797</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av3">TA</div>
+        <div class="mi"><div class="mn">Tan Aik Fatt</div><div class="mid">23078595</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av6">TC</div>
+        <div class="mi"><div class="mn">Thoo Chin Hao</div><div class="mid">23074155</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av4">TJ</div>
+        <div class="mi"><div class="mn">Tan Jia Xin</div><div class="mid">23080880</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av4">SJ</div>
+        <div class="mi"><div class="mn">So Jim Hom</div><div class="mid">23073307</div></div>
+        
+      </div>
+      <div class="mrow">
+        <div class="av av5">BL</div>
+        <div class="mi"><div class="mn">Brandon Lee Cheng Yi</div><div class="mid">23091754</div></div>
+        
+      </div></div>
+      <div class="meta" style="margin-bottom:4px"><span>just now</span><span>0 spots left</span></div>
+      <button class="btn btn-full" disabled="" style="opacity:.5;cursor:not-allowed">Group is full</button><button class="btn btn-d btn-full" onclick="openDel(&#39;imp_17786565889960.8438760612951086&#39;)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M9 6V4h6v2"></path></svg>
+      Delete group</button>
+    </div></div>
+  </div>
+
+  <!-- CREATE -->
+  <div id="tab-create" class="sec">
+    <div class="fcard">
+      <h2>Create a new group</h2>
+      <p class="sub">You'll be the first member and group leader.</p>
+      <div class="slbl">Your details</div>
+      <div class="fg"><label>Full name *</label><input id="cn" placeholder="e.g. Ahmad Fariz bin Razali"></div>
+      <div class="fgrow">
+        <div class="fg"><label>Student ID *</label><input id="ci" placeholder="e.g. 2024001234"></div>
+        <div class="fg"><label>Email *</label><input id="ce" type="email" placeholder="e.g. ahmad@u.edu.my"></div>
+      </div>
+      <hr class="divider">
+      <div class="slbl">Group details</div>
+      <div class="fg"><label>Group name *</label><input id="gn" placeholder="e.g. Team Nexus"></div>
+      <div class="fg"><label>Course / Assignment topic</label><input id="gt" placeholder="e.g. CSIT302 – Software Engineering"></div>
+      <div class="fg"><label>Brief description</label><textarea id="gd" placeholder="e.g. Focusing on backend and cloud"></textarea></div>
+      <div class="fg"><label>Maximum group size</label>
+        <select id="gm"><option value="5">5 members</option><option value="6" selected="">6 members</option></select>
+      </div>
+      <button class="btn btn-p btn-full" id="cbtn" onclick="createGroup()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="20" y1="8" x2="20" y2="14"></line><line x1="23" y1="11" x2="17" y2="11"></line></svg>
+        Create group &amp; register me
+      </button>
+    </div>
+  </div>
+
+  <!-- MY -->
+  <div id="tab-my" class="sec">
+    <div id="my"></div>
   </div>
 </div>
 
-<div class="modal-wrap" id="del-wrap">
+<!-- JOIN MODAL -->
+<div class="moverlay" id="jmod">
   <div class="modal">
-    <h3>Delete group</h3>
-    <p class="msub" id="del-msub"></p>
-    <div class="fg"><label>Type the group name to confirm *</label><input type="text" id="del-input" placeholder="Exact group name"/></div>
-    <div class="macts">
-      <button onclick="closeDelModal()">Cancel</button>
-      <button style="background:#FCEBEB;color:#791F1F;border-color:#F09595" onclick="confirmDel()"><i class="ti ti-trash" aria-hidden="true"></i> Delete</button>
+    <h3>Join this group</h3>
+    <p class="msub" id="jsub">Enter your details.</p>
+    <div class="fg"><label>Full name *</label><input id="jn" placeholder="e.g. Siti Rahimah binti Ali"></div>
+    <div class="fgrow">
+      <div class="fg"><label>Student ID *</label><input id="ji" placeholder="e.g. 2024005678"></div>
+      <div class="fg"><label>Email *</label><input id="je" type="email" placeholder="e.g. siti@u.edu.my"></div>
+    </div>
+    <div class="mact">
+      <button class="btn" onclick="closeM(&#39;jmod&#39;)">Cancel</button>
+      <button class="btn btn-p" id="jbtn" onclick="confirmJoin()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="20" y1="8" x2="20" y2="14"></line><line x1="23" y1="11" x2="17" y2="11"></line></svg>
+        Confirm &amp; join
+      </button>
     </div>
   </div>
 </div>
 
+<!-- DELETE MODAL -->
+<div class="moverlay" id="dmod">
+  <div class="modal">
+    <h3>Delete this group?</h3>
+    <p class="msub" id="dsub">This action cannot be undone.</p>
+    <div class="del-warn">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline;vertical-align:-2px;margin-right:3px"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+      All members will be removed and must re-register elsewhere.
+    </div>
+    <div class="mact">
+      <button class="btn" onclick="closeM(&#39;dmod&#39;)">Cancel</button>
+      <button class="btn btn-d" id="dbtn" onclick="confirmDelete()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M9 6V4h6v2"></path></svg>
+        Yes, delete group
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- IMPORT PREVIEW MODAL -->
+<div class="moverlay" id="imod">
+  <div class="modal preview-modal">
+    <h3>Import Preview</h3>
+    <p class="msub" id="isub">26 groups found in "Registration of Assignment Group(Sheet1).xlsx"</p>
+    <div class="preview-table-wrap" id="preview-wrap">
+        <table class="preview-table">
+          <thead><tr><th>Group Name</th><th>Leader</th><th>Members</th><th>Total</th></tr></thead>
+          <tbody><tr>
+          <td><strong>Nexora</strong></td>
+          <td>Ng Shi Kee <span style="color:var(--muted);font-size:11px">23062797</span></td>
+          <td>Tan Aik Fatt <span style="color:var(--muted);font-size:11px">(23078595)</span><br>Thoo Chin Hao <span style="color:var(--muted);font-size:11px">(23074155)</span><br>Tan Jia Xin <span style="color:var(--muted);font-size:11px">(23080880)</span><br>So Jim Hom <span style="color:var(--muted);font-size:11px">(23073307)</span><br>Brandon Lee Cheng Yi <span style="color:var(--muted);font-size:11px">(23091754)</span></td>
+          <td style="text-align:center">6</td>
+        </tr><tr>
+          <td><strong>Chatgpt</strong></td>
+          <td>Inez Reyhanz Binti Khaeril Zach <span style="color:var(--muted);font-size:11px">16082398</span></td>
+          <td>Keshna Devi Goorah <span style="color:var(--muted);font-size:11px">(24017675)</span><br>Teoh Pei Ying <span style="color:var(--muted);font-size:11px">(23137714)</span><br>Chooi Mei Yin <span style="color:var(--muted);font-size:11px">(23013634)</span><br>Charissa Santos Cruz <span style="color:var(--muted);font-size:11px">(23016199)</span><br>Ho Jia Mei <span style="color:var(--muted);font-size:11px">(24005688)</span></td>
+          <td style="text-align:center">6</td>
+        </tr><tr>
+          <td><strong>AI Lovers</strong></td>
+          <td>Jaeden Ting Yiyong <span style="color:var(--muted);font-size:11px">23009798</span></td>
+          <td>Evan Lo Jen Zhen <span style="color:var(--muted);font-size:11px">(23026842)</span><br>Wai Phyo Hein <span style="color:var(--muted);font-size:11px">(22108765)</span><br>Chin Shaw Zhuong <span style="color:var(--muted);font-size:11px">(24153058)</span><br>Sohom Chakma <span style="color:var(--muted);font-size:11px">(22107791)</span><br>Raymond Tham Chun Keet <span style="color:var(--muted);font-size:11px">(19010461)</span></td>
+          <td style="text-align:center">6</td>
+        </tr><tr>
+          <td><strong>ChatGPT</strong></td>
+          <td>Colin Ng Mung Chun <span style="color:var(--muted);font-size:11px">22070007</span></td>
+          <td>Ho Mun Wai <span style="color:var(--muted);font-size:11px">(22067292)</span><br>Bryan Chung Zhi Wei <span style="color:var(--muted);font-size:11px">(22051502)</span><br>Koh Ti Sun <span style="color:var(--muted);font-size:11px">(22086607)</span><br>Lim Yit Wei <span style="color:var(--muted);font-size:11px">(22076244)</span></td>
+          <td style="text-align:center">5</td>
+        </tr><tr>
+          <td><strong>Breaking Bank</strong></td>
+          <td>Teo Zen Ben <span style="color:var(--muted);font-size:11px">22120679</span></td>
+          <td>Jeanette Tan En Jie <span style="color:var(--muted);font-size:11px">(23035173)</span><br>Nyow An Qi <span style="color:var(--muted);font-size:11px">(23026693)</span><br>Thevesh A/L Chandran <span style="color:var(--muted);font-size:11px">(24017717)</span><br>Lau Zheng Hao <span style="color:var(--muted);font-size:11px">(23137771)</span><br>Teo Zen Ben <span style="color:var(--muted);font-size:11px">(22120679)</span></td>
+          <td style="text-align:center">6</td>
+        </tr><tr>
+          <td><strong>powerpuff</strong></td>
+          <td>Rhianne See Tho <span style="color:var(--muted);font-size:11px">22035273</span></td>
+          <td>Chan Hui Qi <span style="color:var(--muted);font-size:11px">(22076673)</span><br>Chloe Low Hoy Yi <span style="color:var(--muted);font-size:11px">(22074991)</span><br>Clarine Chew Kai Xin <span style="color:var(--muted);font-size:11px">(23108251)</span><br>Pang Xiao Qi <span style="color:var(--muted);font-size:11px">(22054159)</span><br>Yap Zhi Xuan <span style="color:var(--muted);font-size:11px">(22067284)</span></td>
+          <td style="text-align:center">6</td>
+        </tr><tr>
+          <td><strong>AI AI Captain</strong></td>
+          <td>Soong Shuki <span style="color:var(--muted);font-size:11px">23105059</span></td>
+          <td>Choong Yuk Yan <span style="color:var(--muted);font-size:11px">(23101694)</span><br>Jacey Ng Siew Fang <span style="color:var(--muted);font-size:11px">(22050587)</span><br>Oh Chen Wei <span style="color:var(--muted);font-size:11px">(22043574)</span><br>Soong Shuki <span style="color:var(--muted);font-size:11px">(23105059)</span><br>Joshua Ng Wei Hong <span style="color:var(--muted);font-size:11px">(22063747)</span></td>
+          <td style="text-align:center">6</td>
+        </tr><tr>
+          <td><strong>AI-67</strong></td>
+          <td>Lew Shang Hao <span style="color:var(--muted);font-size:11px">22055362</span></td>
+          <td>Kong Wei Theng <span style="color:var(--muted);font-size:11px">(22077184)</span><br>Foo Yew Jo <span style="color:var(--muted);font-size:11px">(22054290)</span><br>Wong Zi Yang <span style="color:var(--muted);font-size:11px">(22090336)</span><br>Lee Zong Xun <span style="color:var(--muted);font-size:11px">(22083844)</span><br>Bernice Wong Jian Xuan <span style="color:var(--muted);font-size:11px">(22056998)</span></td>
+          <td style="text-align:center">6</td>
+        </tr><tr>
+          <td><strong>Cooked</strong></td>
+          <td>Ong Xin Rou <span style="color:var(--muted);font-size:11px">23088479</span></td>
+          <td>Cindy Wong <span style="color:var(--muted);font-size:11px">(22112908)</span><br>Janet Beh Jing Le <span style="color:var(--muted);font-size:11px">(24121097)</span><br>Lee Jean Suen <span style="color:var(--muted);font-size:11px">(24040644)</span><br>Jesslyn Wong Mei Chui <span style="color:var(--muted);font-size:11px">(23029804)</span></td>
+          <td style="text-align:center">5</td>
+        </tr><tr>
+          <td><strong>SunGPT</strong></td>
+          <td>Chu Hong Wu <span style="color:var(--muted);font-size:11px">24029308</span></td>
+          <td>Lau Zi Yi <span style="color:var(--muted);font-size:11px">(24021891)</span><br>Frederich Leong Heng Hao <span style="color:var(--muted);font-size:11px">(24021461)</span><br>Swee Kae Xuan <span style="color:var(--muted);font-size:11px">(24017642)</span><br>Afiq Bin Nor Azlan <span style="color:var(--muted);font-size:11px">(24039638)</span><br>Gan Wei Jun <span style="color:var(--muted);font-size:11px">(24023590)</span></td>
+          <td style="text-align:center">6</td>
+        </tr><tr>
+          <td><strong>Wo AI Ni</strong></td>
+          <td>Chin Yung Xuan <span style="color:var(--muted);font-size:11px">22057590</span></td>
+          <td>Albert Pang Kian Cheng <span style="color:var(--muted);font-size:11px">(22040943)</span><br>Eng Zheng Yu <span style="color:var(--muted);font-size:11px">(22070544)</span><br>Tye Khan Wei <span style="color:var(--muted);font-size:11px">(22063051)</span><br>Addison Loo Jie Wen <span style="color:var(--muted);font-size:11px">(22081293)</span><br>Tan Yann Bin <span style="color:var(--muted);font-size:11px">(22071674)</span></td>
+          <td style="text-align:center">6</td>
+        </tr><tr>
+          <td><strong>AI-mazing</strong></td>
+          <td>Arun A/L Thana Balan <span style="color:var(--muted);font-size:11px">22092738</span></td>
+          <td>Oscar Tan Tong Sing <span style="color:var(--muted);font-size:11px">(22063176)</span><br>Kua Qian Ru <span style="color:var(--muted);font-size:11px">(22073522)</span><br>Amberly Teoh Ke Wei <span style="color:var(--muted);font-size:11px">(22094775)</span><br>Tan Ee Yern <span style="color:var(--muted);font-size:11px">(22101877)</span><br>Chan Yong Hang <span style="color:var(--muted);font-size:11px">(23030992)</span></td>
+          <td style="text-align:center">6</td>
+        </tr><tr>
+          <td><strong>Giggle</strong></td>
+          <td>Wong Hui San <span style="color:var(--muted);font-size:11px">22034540</span></td>
+          <td>Ayu Wen Li <span style="color:var(--muted);font-size:11px">(22017867)</span><br>Keertana A/P Subramaniam <span style="color:var(--muted);font-size:11px">(23109614)</span><br>Siow Qi Yung <span style="color:var(--muted);font-size:11px">(22053037)</span><br>Vidhipriya Devi Pokiri <span style="color:var(--muted);font-size:11px">(23057953)</span></td>
+          <td style="text-align:center">5</td>
+        </tr><tr>
+          <td><strong>The Six Watermelons</strong></td>
+          <td>Goo Weng Xi <span style="color:var(--muted);font-size:11px">22034987</span></td>
+          <td>Tham Yan Qi <span style="color:var(--muted);font-size:11px">(22055719)</span><br>Lim Phin Han <span style="color:var(--muted);font-size:11px">(22052898)</span><br>Chia Kah Yan <span style="color:var(--muted);font-size:11px">(23096688)</span><br>Victoria Liu Xiao Zhen <span style="color:var(--muted);font-size:11px">(22065676)</span><br>Tai Xiu Yiu <span style="color:var(--muted);font-size:11px">(22038756)</span></td>
+          <td style="text-align:center">6</td>
+        </tr><tr>
+          <td><strong>Ai Slaps</strong></td>
+          <td>Lionel Lim Ye Sheng <span style="color:var(--muted);font-size:11px">22086540</span></td>
+          <td>Lim Chun Yeh <span style="color:var(--muted);font-size:11px">(22073233)</span><br>Hoang Minh Chau <span style="color:var(--muted);font-size:11px">(22007702)</span><br>Thum Ji Meng <span style="color:var(--muted);font-size:11px">(22082341)</span><br>Jaimelynn Wong Shin Yew <span style="color:var(--muted);font-size:11px">(23113814)</span><br>Fathima Nuha Nizar <span style="color:var(--muted);font-size:11px">(23102676)</span></td>
+          <td style="text-align:center">6</td>
+        </tr><tr>
+          <td><strong>Hopperssssss</strong></td>
+          <td>Tan Yuett Ning <span style="color:var(--muted);font-size:11px">22057954</span></td>
+          <td>Tan Wee Jin <span style="color:var(--muted);font-size:11px">(22057384)</span><br>Liew Sau Yang <span style="color:var(--muted);font-size:11px">(22062475)</span><br>Oh Voon Keat <span style="color:var(--muted);font-size:11px">(22064091)</span><br>Edward Thong Jia Ming <span style="color:var(--muted);font-size:11px">(22055818)</span><br>Tang Zewei <span style="color:var(--muted);font-size:11px">(22106256)</span></td>
+          <td style="text-align:center">6</td>
+        </tr><tr>
+          <td><strong>Six_Seven</strong></td>
+          <td>Yew Hao En <span style="color:var(--muted);font-size:11px">22070452</span></td>
+          <td>Lee Chun Kit <span style="color:var(--muted);font-size:11px">(22070593)</span><br>Lee Jun Yin <span style="color:var(--muted);font-size:11px">(22060651)</span><br>Chan Zhien Yet <span style="color:var(--muted);font-size:11px">(22078927)</span><br>Ryan Choo Jun-Leng <span style="color:var(--muted);font-size:11px">(22070247)</span></td>
+          <td style="text-align:center">5</td>
+        </tr><tr>
+          <td><strong>group9</strong></td>
+          <td>Lee Yee Kang <span style="color:var(--muted);font-size:11px">24029084</span></td>
+          <td>Lee Wie Jie <span style="color:var(--muted);font-size:11px">(24033474)</span><br>Liang Jin Yee <span style="color:var(--muted);font-size:11px">(24023285)</span><br>Soon Wei Zhe <span style="color:var(--muted);font-size:11px">(24024523)</span><br>Zheng Wei Xuen <span style="color:var(--muted);font-size:11px">(22007827)</span><br>Chang Zi Kai <span style="color:var(--muted);font-size:11px">(24027302)</span></td>
+          <td style="text-align:center">6</td>
+        </tr><tr>
+          <td><strong>Nini and the gang</strong></td>
+          <td>Loke Sheng Heng <span style="color:var(--muted);font-size:11px">22081376</span></td>
+          <td>Yong Kar Yee <span style="color:var(--muted);font-size:11px">(22057749)</span><br>Chua Guangrou <span style="color:var(--muted);font-size:11px">(22086037)</span><br>Yap Yung Jun <span style="color:var(--muted);font-size:11px">(25048612)</span><br>Wong Xu Liang <span style="color:var(--muted);font-size:11px">(25018565)</span><br>Loo ZiXian <span style="color:var(--muted);font-size:11px">(22007801)</span></td>
+          <td style="text-align:center">6</td>
+        </tr><tr>
+          <td><strong>6 Humans</strong></td>
+          <td>Roshan Sivakumar <span style="color:var(--muted);font-size:11px">23028285</span></td>
+          <td>Lee Jang Jou <span style="color:var(--muted);font-size:11px">(21099502)</span><br>Thong Yong Ru <span style="color:var(--muted);font-size:11px">(23021272)</span><br>Lim Han Xuan <span style="color:var(--muted);font-size:11px">(22120158)</span><br>Ginnie Thai Junyi <span style="color:var(--muted);font-size:11px">(23089519)</span><br>Soh Wei Wen <span style="color:var(--muted);font-size:11px">(23015118)</span></td>
+          <td style="text-align:center">6</td>
+        </tr><tr>
+          <td><strong>null</strong></td>
+          <td>Tan Kok Feng <span style="color:var(--muted);font-size:11px">23015811</span></td>
+          <td>Wong Wen Ru <span style="color:var(--muted);font-size:11px">(23020621)</span><br>Wong Yu Xuan <span style="color:var(--muted);font-size:11px">(24020810)</span><br>Ch’ng Shen Ming <span style="color:var(--muted);font-size:11px">(24018566)</span><br>Yong Yung Jian <span style="color:var(--muted);font-size:11px">(24028748)</span><br>Tan Kok Feng <span style="color:var(--muted);font-size:11px">(23015811)</span></td>
+          <td style="text-align:center">6</td>
+        </tr><tr>
+          <td><strong>Practical 15 Group 1</strong></td>
+          <td>Caryl Kong Khoy Yee <span style="color:var(--muted);font-size:11px">22070098</span></td>
+          <td>Michelle Lim Chieh Yi <span style="color:var(--muted);font-size:11px">(22075881)</span><br>Phoebe Wong Wei Yen <span style="color:var(--muted);font-size:11px">(22075659)</span><br>Tan Sim May <span style="color:var(--muted);font-size:11px">(22089585)</span><br>Tay Ri Anne <span style="color:var(--muted);font-size:11px">(22055164)</span><br>Yeap Yu Lin <span style="color:var(--muted);font-size:11px">(22088843)</span></td>
+          <td style="text-align:center">6</td>
+        </tr><tr>
+          <td><strong>Idk</strong></td>
+          <td>Lee Yi Lam <span style="color:var(--muted);font-size:11px">25010083</span></td>
+          <td>Voon Yik Hui <span style="color:var(--muted);font-size:11px">(22010425)</span><br>Ong Wei Min <span style="color:var(--muted);font-size:11px">(22055859)</span><br>Ng Jia San <span style="color:var(--muted);font-size:11px">(25012410)</span><br>Chia Kai Hong <span style="color:var(--muted);font-size:11px">(23019862)</span><br>Nurish Farisya binti Mohammad Fadzil <span style="color:var(--muted);font-size:11px">(23101124)</span></td>
+          <td style="text-align:center">6</td>
+        </tr><tr>
+          <td><strong>Deep Fried Search</strong></td>
+          <td>Esther Chan Lee Hsuen <span style="color:var(--muted);font-size:11px">230330887</span></td>
+          <td>Teoh Yan Ying <span style="color:var(--muted);font-size:11px">(23097835)</span><br>Chong Wen Hui <span style="color:var(--muted);font-size:11px">(23096183)</span><br>Chen Shin Cheng <span style="color:var(--muted);font-size:11px">(23097033)</span><br>Lee Bi Ying <span style="color:var(--muted);font-size:11px">(23069115)</span><br>Cham Poh Yee <span style="color:var(--muted);font-size:11px">(23068711)</span></td>
+          <td style="text-align:center">6</td>
+        </tr><tr>
+          <td><strong>Last Sem</strong></td>
+          <td>JASON ONG YANN JING <span style="color:var(--muted);font-size:11px">22034870</span></td>
+          <td>Lim Li Kein <span style="color:var(--muted);font-size:11px">(22054464)</span><br>Hii Hieng Nguong <span style="color:var(--muted);font-size:11px">(22014385)</span><br>RUBEN RAJ A/L KARTHIGASU <span style="color:var(--muted);font-size:11px">(22066476)</span><br>Lee Wen Zheh <span style="color:var(--muted);font-size:11px">(23095466)</span></td>
+          <td style="text-align:center">5</td>
+        </tr><tr>
+          <td><strong>SunwayGpt</strong></td>
+          <td>Choong Zhen Yang <span style="color:var(--muted);font-size:11px">23029465</span></td>
+          <td>Darryl Chan Wei Qian <span style="color:var(--muted);font-size:11px">(23025265)</span><br>Simon Yap <span style="color:var(--muted);font-size:11px">(23016678)</span><br>Lam Chee Hiew <span style="color:var(--muted);font-size:11px">(22035455)</span><br>Lim Xin Hui <span style="color:var(--muted);font-size:11px">(23137508)</span><br>Choong Zhen Yang <span style="color:var(--muted);font-size:11px">(23029465)</span></td>
+          <td style="text-align:center">6</td>
+        </tr></tbody>
+        </table></div>
+    <div class="notice" id="import-warn" style="display:none;margin-bottom:.8rem">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+      <span id="import-warn-txt"></span>
+    </div>
+    <div class="mact">
+      <button class="btn" onclick="closeM(&#39;imod&#39;)">Cancel</button>
+      <button class="btn btn-p" id="ibtn" onclick="confirmImport()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg> Import all groups</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ SCRIPT -->
 <script>
-const SEED=[
-  {id:'g1',name:'Nexora',max:6,members:[{name:'Ng Shi Kee',id:'23062797',ldr:true},{name:'Tan Aik Fatt',id:'23078595'},{name:'Thoo Chin Hao',id:'23074155'},{name:'Tan Jia Xin',id:'23080880'},{name:'So Jim Hom',id:'23073307'},{name:'Brandon Lee Cheng Yi',id:'23091754'}]},
-  {id:'g2',name:'Chatgpt',max:6,members:[{name:'Inez Reyhanz Binti Khaeril Zach',id:'16082398',ldr:true},{name:'Keshna Devi Goorah',id:'24017675'},{name:'Teoh Pei Ying',id:'23137714'},{name:'Chooi Mei Yin',id:'23013634'},{name:'Charissa Santos Cruz',id:'23016199'},{name:'Ho Jia Mei',id:'24005688'}]},
-  {id:'g3',name:'AI Lovers',max:6,members:[{name:'Jaeden Ting Yiyong',id:'23009798',ldr:true},{name:'Evan Lo Jen Zhen',id:'23026842'},{name:'Wai Phyo Hein',id:'22108765'},{name:'Chin Shaw Zhuong',id:'24153058'},{name:'Sohom Chakma',id:'22107791'},{name:'Raymond Tham Chun Keet',id:'19010461'}]},
-  {id:'g4',name:'ChatGPT',max:6,members:[{name:'Colin Ng Mung Chun',id:'22070007',ldr:true},{name:'Ho Mun Wai',id:'22067292'},{name:'Bryan Chung Zhi Wei',id:'22051502'},{name:'Koh Ti Sun',id:'22086607'},{name:'Lim Yit Wei',id:'22076244'}]},
-  {id:'g5',name:'Breaking Bank',max:6,members:[{name:'Teo Zen Ben',id:'22120679',ldr:true},{name:'Jeanette Tan En Jie',id:'23035173'},{name:'Nyow An Qi',id:'23026693'},{name:'Thevesh A/L Chandran',id:'24017717'},{name:'Lau Zheng Hao',id:'23137771'}]},
-  {id:'g6',name:'powerpuff',max:6,members:[{name:'Rhianne See Tho',id:'22035273',ldr:true},{name:'Chan Hui Qi',id:'22076673'},{name:'Chloe Low Hoy Yi',id:'22074991'},{name:'Clarine Chew Kai Xin',id:'23108251'},{name:'Pang Xiao Qi',id:'22054159'},{name:'Yap Zhi Xuan',id:'22067284'}]},
-  {id:'g7',name:'AI AI Captain',max:6,members:[{name:'Soong Shuki',id:'23105059',ldr:true},{name:'Choong Yuk Yan',id:'23101694'},{name:'Jacey Ng Siew Fang',id:'22050587'},{name:'Oh Chen Wei',id:'22043574'},{name:'Joshua Ng Wei Hong',id:'22063747'}]},
-  {id:'g8',name:'AI-67',max:6,members:[{name:'Lew Shang Hao',id:'22055362',ldr:true},{name:'Kong Wei Theng',id:'22077184'},{name:'Foo Yew Jo',id:'22054290'},{name:'Wong Zi Yang',id:'22090336'},{name:'Lee Zong Xun',id:'22083844'},{name:'Bernice Wong Jian Xuan',id:'22056998'}]},
-  {id:'g9',name:'Cooked',max:6,members:[{name:'Ong Xin Rou',id:'23088479',ldr:true},{name:'Cindy Wong',id:'22112908'},{name:'Janet Beh Jing Le',id:'24121097'},{name:'Lee Jean Suen',id:'24040644'},{name:'Jesslyn Wong Mei Chui',id:'23029804'}]},
-  {id:'g10',name:'SunGPT',max:6,members:[{name:'Chu Hong Wu',id:'24029308',ldr:true},{name:'Lau Zi Yi',id:'24021891'},{name:'Frederich Leong Heng Hao',id:'24021461'},{name:'Swee Kae Xuan',id:'24017642'},{name:'Afiq Bin Nor Azlan',id:'24039638'},{name:'Gan Wei Jun',id:'24023590'}]},
-  {id:'g11',name:'Wo Ai Ni',max:6,members:[{name:'Chin Yung Xuan',id:'22057590',ldr:true},{name:'Albert Pang Kian Cheng',id:'22040943'},{name:'Eng Zheng Yu',id:'22070544'},{name:'Tye Khan Wei',id:'22063051'},{name:'Addison Loo Jie Wen',id:'22081293'},{name:'Tan Yann Bin',id:'22071674'}]},
-  {id:'g12',name:'AI-mazing',max:6,members:[{name:'Arun A/L Thana Balan',id:'22092738',ldr:true},{name:'Oscar Tan Tong Sing',id:'22063176'},{name:'Kua Qian Ru',id:'22073522'},{name:'Amberly Teoh Ke Wei',id:'22094775'},{name:'Tan Ee Yern',id:'22101877'},{name:'Chan Yong Hang',id:'23030992'}]},
-  {id:'g13',name:'Giggle',max:6,members:[{name:'Wong Hui San',id:'22034540',ldr:true},{name:'Ayu Wen Li',id:'22017867'},{name:'Keertana A/P Subramaniam',id:'23109614'},{name:'Siow Qi Yung',id:'22053037'},{name:'Vidhipriya Devi Pokiri',id:'23057953'}]},
-  {id:'g14',name:'The Six Watermelons',max:6,members:[{name:'Goo Weng Xi',id:'22034987',ldr:true},{name:'Tham Yan Qi',id:'22055719'},{name:'Lim Phin Han',id:'22052898'},{name:'Chia Kah Yan',id:'23096688'},{name:'Victoria Liu Xiao Zhen',id:'22065676'},{name:'Tai Xiu Yiu',id:'22038756'}]},
-  {id:'g15',name:'Ai Slaps',max:6,members:[{name:'Lionel Lim Ye Sheng',id:'22086540',ldr:true},{name:'Lim Chun Yeh',id:'22073233'},{name:'Hoang Minh Chau',id:'22007702'},{name:'Thum Ji Meng',id:'22082341'},{name:'Jaimelynn Wong Shin Yew',id:'23113814'},{name:'Fathima Nuha Nizar',id:'23102676'}]},
-  {id:'g16',name:'Hopperssssss',max:6,members:[{name:'Tan Yuett Ning',id:'22057954',ldr:true},{name:'Tan Wee Jin',id:'22057384'},{name:'Liew Sau Yang',id:'22062475'},{name:'Oh Voon Keat',id:'22064091'},{name:'Edward Thong Jia Ming',id:'22055818'},{name:'Tang Zewei',id:'22106256'}]},
-  {id:'g17',name:'Six_Seven',max:6,members:[{name:'Yew Hao En',id:'22070452',ldr:true},{name:'Lee Chun Kit',id:'22070593'},{name:'Lee Jun Yin',id:'22060651'},{name:'Chan Zhien Yet',id:'22078927'},{name:'Ryan Choo Jun-Leng',id:'22070247'}]},
-  {id:'g18',name:'group9',max:6,members:[{name:'Lee Yee Kang',id:'24029084',ldr:true},{name:'Lee Wie Jie',id:'24033474'},{name:'Liang Jin Yee',id:'24023285'},{name:'Soon Wei Zhe',id:'24024523'},{name:'Zheng Wei Xuen',id:'22007827'},{name:'Chang Zi Kai',id:'24027302'}]},
-  {id:'g19',name:'Nini and the gang',max:7,members:[{name:'Loke Sheng Heng',id:'22081376',ldr:true},{name:'Yong Kar Yee',id:'22057749'},{name:'Chua Guangrou',id:'22086037'},{name:'Yap Yung Jun',id:'25048612'},{name:'Wong Xu Liang',id:'25018565'},{name:'Loo ZiXian',id:'22007801'}]},
-  {id:'g20',name:'6 Humans',max:6,members:[{name:'Roshan Sivakumar',id:'23028285',ldr:true},{name:'Lee Jang Jou',id:'21099502'},{name:'Thong Yong Ru',id:'23021272'},{name:'Lim Han Xuan',id:'22120158'},{name:'Ginnie Thai Junyi',id:'23089519'},{name:'Soh Wei Wen',id:'23015118'}]},
-  {id:'g21',name:'null',max:6,members:[{name:'Tan Kok Feng',id:'23015811',ldr:true},{name:'Wong Wen Ru',id:'23020621'},{name:'Wong Yu Xuan',id:'24020810'},{name:'Ch’ng Shen Ming',id:'24018566'},{name:'Yong Yung Jian',id:'24028748'},{name:'Tan Kok Feng',id:'23015811'}]},
-  {id:'g22',name:'Practical 15 Group 1',max:6,members:[{name:'Caryl Kong Khoy Yee',id:'22070098',ldr:true},{name:'Michelle Lim Chieh Yi',id:'22075881'},{name:'Phoebe Wong Wei Yen',id:'22075659'},{name:'Tan Sim May',id:'22089585'},{name:'Tay Ri Anne',id:'22055164'}]},
-  {id:'g23',name:'Idk',max:6,members:[{name:'Lee Yi Lam',id:'25010083',ldr:true},{name:'Voon Yik Hui',id:'22010425'},{name:'Ong Wei Min',id:'22055859'},{name:'Ng Jia San',id:'25012410'},{name:'Chia Kai Hong',id:'23019862'},{name:'Nurish Farisya binti Mohammad Fadzil',id:'23101124'}]},
-  {id:'g24',name:'Deep Fried Search',max:6,members:[{name:'Esther Chan Lee Hsuen',id:'230330887',ldr:true},{name:'Teoh Yan Ying',id:'23097835'},{name:'Chong Wen Hui',id:'23096183'},{name:'Chen Shin Cheng',id:'23097033'},{name:'Lee Bi Ying',id:'23069115'},{name:'Cham Poh Yee',id:'23068711'}]},
-  {id:'g25',name:'Last Sem',max:6,members:[{name:'Jason Ong Yann Jing',id:'22034870',ldr:true},{name:'Lim Li Kein',id:'22054464'},{name:'Hii Hieng Nguong',id:'22014385'},{name:'Ruben Raj A/L Karthigasu',id:'22066476'},{name:'Lee Wen Zheh',id:'23095466'}]},
-  {id:'g26',name:'SunwayGpt',max:6,members:[{name:'Choong Zhen Yang',id:'23029465',ldr:true},{name:'Darryl Chan Wei Qian',id:'23025265'},{name:'Simon Yap',id:'23016678'},{name:'Lam Chee Hiew',id:'22035455'},{name:'Lim Xin Hui',id:'23137508'}]},
+// ── State ─────────────────────────────────────────────────────
+let groups = [];
+let user = {};
+let joinId = null, delId = null;
+let fbOK = false;
+let pendingImport = [];   // rows staged for import
+
+// Excel column mapping (exact header names)
+const XL_HEADERS = [
+  "Group Name",
+  "Name of Group Leader","Student ID of Group Leader",
+  "Name of Group Member 1","Student ID of Group Member 1",
+  "Name of Group Member 2","Student ID of Group Member 2",
+  "Name of Group Member 3","Student ID for Group Member 3",
+  "Name of Group Member 4","Student ID of Group Member 4",
+  "Name of Group Member 5","Student ID of Group Member 5",
+  "Name of Group Member 6","Student ID of Group Member 6"
 ];
 
-let groups=[];
-let delGid=null;
-let cu={};
-let cstep=1;
-try{cu=JSON.parse(localStorage.getItem('sg_u')||'{}')}catch(e){}
-function saveU(u){try{localStorage.setItem('sg_u',JSON.stringify(u))}catch(e){}cu=u}
+try { user = JSON.parse(localStorage.getItem('gs_u')||'{}'); } catch(e){}
 
-function ini(n){return n.trim().split(/\s+/).slice(0,2).map(w=>w[0]).join('').toUpperCase()||'?'}
-function avc(n){let h=0;for(let c of n)h=(h*31+c.charCodeAt(0))%7;return h}
-function ago(ts){if(!ts)return'';const d=Date.now()-ts;if(d<60000)return'just now';if(d<3600000)return Math.floor(d/60000)+'m ago';if(d<86400000)return Math.floor(d/3600000)+'h ago';return Math.floor(d/86400000)+'d ago'}
-function uid(){return'gx'+Date.now().toString(36)+Math.random().toString(36).slice(2,5)}
-function allIds(){return new Set(groups.flatMap(g=>g.members.map(m=>m.id.trim())))}
-
-async function loadData(refresh=false){
-  setSyncLbl('<span class="spin"></span>Syncing…');
+// ── Firebase ───────────────────────────────────────────────────
+(function init(){
   try{
-    const r=await window.storage.get('sg-groups-v1',true);
-    if(r&&r.value){
-      groups=JSON.parse(r.value);
-    } else {
-      groups=SEED.map(g=>({...g,ts:Date.now()-Math.floor(Math.random()*86400000),members:g.members.map(m=>({...m}))}));
-      await persist();
-    }
-    setSyncLbl('<i class="ti ti-cloud-check" style="color:#1D9E75;font-size:14px"></i> Synced');
+    const cfg = firebase.app().options;
+    if(!cfg.apiKey||cfg.apiKey==='YOUR_API_KEY') throw 0;
+    setConn('…');
+    db.collection('groups').orderBy('createdAt','desc').onSnapshot(snap=>{
+      groups = snap.docs.map(d=>({id:d.id,...d.data(),ts:d.data().createdAt?.toMillis?.()||Date.now()}));
+      fbOK=true; setConn('live'); refresh();
+    },e=>{console.error(e);setConn('err');demo();});
   }catch(e){
-    if(!groups.length)groups=SEED.map(g=>({...g,ts:Date.now(),members:g.members.map(m=>({...m}))}));
-    setSyncLbl('<i class="ti ti-wifi-off" style="font-size:14px"></i> Offline');
+    document.getElementById('demo-notice').style.display='flex';
+    setConn('demo'); demo();
   }
-  if(refresh)showAlert('Data refreshed.','a-inf');
-  updateStats();renderGroups();renderSheet();renderMy();
-}
-async function persist(){
-  try{await window.storage.set('sg-groups-v1',JSON.stringify(groups),true)}catch(e){}
-  setSyncLbl('<i class="ti ti-cloud-check" style="color:#1D9E75;font-size:14px"></i> Saved');
-}
-function setSyncLbl(h){document.getElementById('sync-lbl').innerHTML=h}
+})();
 
-function updateStats(){
-  document.getElementById('s-total').textContent=groups.length;
-  document.getElementById('s-open').textContent=groups.filter(g=>g.members.length<g.max).length;
-  document.getElementById('s-members').textContent=groups.reduce((a,g)=>a+g.members.length,0);
-  document.getElementById('s-spots').textContent=groups.reduce((a,g)=>a+Math.max(0,g.max-g.members.length),0);
+
+
+function setConn(s){
+  const d=document.getElementById('cdot'),l=document.getElementById('clbl');
+  d.className='conn-dot';
+  if(s==='live'){d.classList.add('live');l.textContent='Live ●';}
+  else if(s==='err'){d.classList.add('err');l.textContent='Offline';}
+  else if(s==='demo'){l.textContent='Demo mode';}
+  else{l.textContent='Connecting…';}
 }
 
+// ── Helpers ────────────────────────────────────────────────────
+function saveUser(u){try{localStorage.setItem('gs_u',JSON.stringify(u));}catch(e){} user=u;}
+function ini(n){return n.trim().split(/\s+/).slice(0,2).map(w=>w[0]).join('').toUpperCase()||'?';}
+function avc(n){let h=0;for(let c of n)h=(h*31+c.charCodeAt(0))%7;return h;}
+function ago(ts){const d=Date.now()-ts;if(d<60000)return 'just now';if(d<3600000)return Math.floor(d/60000)+'m ago';if(d<86400000)return Math.floor(d/3600000)+'h ago';return Math.floor(d/86400000)+'d ago';}
+
+function refresh(){
+  document.getElementById('s0').textContent=groups.length;
+  document.getElementById('s1').textContent=groups.filter(g=>g.members.length<g.max).length;
+  document.getElementById('s2').textContent=groups.reduce((a,g)=>a+g.members.length,0);
+  document.getElementById('s3').textContent=groups.reduce((a,g)=>a+Math.max(0,g.max-g.members.length),0);
+  renderGroups();
+  if(document.getElementById('tab-my').classList.contains('on')) renderMy();
+}
+
+// ── RENDER GROUPS ──────────────────────────────────────────────
 function renderGroups(){
-  updateStats();
-  const q=(document.getElementById('srch').value||'').toLowerCase();
-  const f=document.getElementById('flt').value;
+  const q=document.getElementById('search').value.toLowerCase();
+  const f=document.getElementById('filter').value;
   const list=groups.filter(g=>{
-    const txt=(g.name+g.members.map(m=>m.name+m.id).join('')).toLowerCase();
-    const m=txt.includes(q);
-    if(f==='open')return m&&g.members.length<g.max;
-    if(f==='full')return m&&g.members.length>=g.max;
-    return m;
+    const hit=(g.name+g.topic+(g.desc||'')).toLowerCase().includes(q);
+    if(f==='open') return hit&&g.members.length<g.max;
+    if(f==='full') return hit&&g.members.length>=g.max;
+    return hit;
   });
-  const c=document.getElementById('grids');
-  if(!list.length){c.innerHTML=`<div class="empty"><i class="ti ti-mood-empty" aria-hidden="true"></i><p>No groups found</p></div>`;return}
-  c.innerHTML=list.map(g=>{
+  const grid=document.getElementById('grid');
+  if(!list.length){
+    grid.innerHTML=`<div class="empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><p style="font-size:14px">No groups found</p></div>`;
+    return;
+  }
+  grid.innerHTML=list.map(g=>{
     const full=g.members.length>=g.max;
-    const mine=g.members.some(m=>m.id===cu.id);
+    const mine=g.members.some(m=>m.id===user.id);
     const slots=Array.from({length:g.max},(_,i)=>`<div class="slot${i<g.members.length?' on':''}"></div>`).join('');
-    const rows=g.members.map(m=>`<div class="mrow">
-      <div class="av av${avc(m.name)}">${ini(m.name)}</div>
-      <div style="flex:1;min-width:0"><div class="mn">${m.name}</div><div class="mid">${m.id}</div></div>
-      ${m.ldr?'<span class="badge b-ldr" style="font-size:10px;padding:1px 5px">Leader</span>':''}
-      ${m.id===cu.id?'<span class="badge b-me" style="font-size:10px;padding:1px 5px">You</span>':''}
-    </div>`).join('');
-    let btn;
-    if(full)btn=`<button disabled style="width:100%;opacity:.45;cursor:not-allowed">Group is full</button>`;
-    else if(mine)btn=`<button disabled style="width:100%;background:#E1F5EE;color:#085041;border-color:#5DCAA5;cursor:default">✓ You're in this group</button>`;
-    else if(cu.groupId)btn=`<button disabled style="width:100%;opacity:.45;cursor:not-allowed">Already in a group</button>`;
-    else btn=`<button style="width:100%;background:#0078d4;color:#fff;border-color:#0078d4" onclick="quickJoin('${g.id}')"><i class="ti ti-user-plus" aria-hidden="true"></i> Join</button>`;
-    return`<div class="card${full?' full':''}${mine?' mine':''}">
-      <div class="ctop"><div class="cname">${g.name}</div><span class="badge ${full?'b-full':'b-open'}">${full?'Full':'Open'}</span></div>
-      <div class="slbl">${g.members.length} / ${g.max} members</div>
-      <div class="slots">${slots}</div>
+    const rows=g.members.map(m=>`
+      <div class="mrow">
+        <div class="av av${avc(m.name)}">${ini(m.name)}</div>
+        <div class="mi"><div class="mn">${m.name}</div><div class="mid">${m.id}</div></div>
+        ${m.id===user.id?'<span class="badge b-you" style="font-size:11px;padding:2px 7px">You</span>':''}
+      </div>`).join('');
+    let action;
+    if(mine) action=`<button class="btn btn-full" style="background:var(--accent-l);color:var(--accent);border-color:var(--accent-b);cursor:default" disabled>✓ You're in this group</button>`;
+    else if(full) action=`<button class="btn btn-full" disabled style="opacity:.5;cursor:not-allowed">Group is full</button>`;
+    else if(user.groupId) action=`<button class="btn btn-full" disabled style="opacity:.5;cursor:not-allowed">You're already in a group</button>`;
+    else action=`<button class="btn btn-p btn-full" onclick="openJoin('${g.id}')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+      Join this group</button>`;
+    const delBtn=`<button class="btn btn-d btn-full" onclick="openDel('${g.id}')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M9 6V4h6v2"/></svg>
+      Delete group</button>`;
+    return `<div class="gcard${full?' full':''}${mine?' mine':''}">
+      <div class="gtop">
+        <div><div class="gname">${g.name}</div><div class="gtopic">${g.topic||'No course set'}</div></div>
+        <span class="badge ${full?'b-full':'b-open'}">${full?'Full':'Open'}</span>
+      </div>
+      ${g.desc?`<div class="gdesc">"${g.desc}"</div>`:''}
+      <div class="sw"><div class="sl-lbl">${g.members.length} / ${g.max} members</div><div class="slots">${slots}</div></div>
       <div class="mlist">${rows}</div>
-      ${g.ts?`<div class="meta"><i class="ti ti-clock" style="font-size:11px" aria-hidden="true"></i> ${ago(g.ts)} · ${g.max-g.members.length} spot${g.max-g.members.length!==1?'s':''} left</div>`:''}
-      ${btn}
-      <button style="width:100%;margin-top:5px;background:#FCEBEB;color:#791F1F;border-color:#F09595" onclick="openDelModal('${g.id}')"><i class="ti ti-trash" aria-hidden="true"></i> Delete</button>
+      <div class="meta" style="margin-bottom:4px"><span>${ago(g.ts)}</span><span>${Math.max(0,g.max-g.members.length)} spot${g.max-g.members.length!==1?'s':''} left</span></div>
+      ${action}${delBtn}
     </div>`;
   }).join('');
 }
 
-function renderSheet(){
-  const all=groups.flatMap(g=>g.members.map(m=>({...m,grp:g.name,max:g.max,size:g.members.length})));
-  document.getElementById('resp-lbl').textContent=`${all.length} response${all.length!==1?'s':''}`;
-  if(!all.length){document.getElementById('sheet-tbl').innerHTML=`<div class="empty" style="grid-column:unset"><i class="ti ti-table" aria-hidden="true"></i><p>No responses yet</p></div>`;return}
-  document.getElementById('sheet-tbl').innerHTML=`<table style="width:100%;border-collapse:collapse;font-size:12px;table-layout:fixed">
-    <colgroup><col style="width:28px"><col style="width:auto"><col style="width:90px"><col style="width:110px"><col style="width:55px"></colgroup>
-    <thead><tr style="background:var(--color-background-secondary);border-bottom:.5px solid var(--color-border-tertiary)">
-      <th style="padding:7px 8px;text-align:left;font-weight:500;color:var(--color-text-secondary);font-size:11px">#</th>
-      <th style="padding:7px 8px;text-align:left;font-weight:500;color:var(--color-text-secondary);font-size:11px">Name</th>
-      <th style="padding:7px 8px;text-align:left;font-weight:500;color:var(--color-text-secondary);font-size:11px">Student ID</th>
-      <th style="padding:7px 8px;text-align:left;font-weight:500;color:var(--color-text-secondary);font-size:11px">Group</th>
-      <th style="padding:7px 8px;text-align:left;font-weight:500;color:var(--color-text-secondary);font-size:11px">Role</th>
-    </tr></thead>
-    <tbody>${all.map((r,i)=>`<tr style="border-bottom:.5px solid var(--color-border-tertiary);${r.id===cu.id?'background:rgba(0,120,212,.05)':''}">
-      <td style="padding:6px 8px;color:var(--color-text-secondary)">${i+1}</td>
-      <td style="padding:6px 8px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${r.name}</td>
-      <td style="padding:6px 8px;font-family:var(--font-mono);font-size:11px">${r.id}</td>
-      <td style="padding:6px 8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${r.grp}</td>
-      <td style="padding:6px 8px"><span class="badge ${r.ldr?'b-ldr':'b-me'}" style="font-size:10px">${r.ldr?'Leader':'Member'}</span></td>
-    </tr>`).join('')}</tbody>
-  </table>`;
-}
-
+// ── RENDER MY ──────────────────────────────────────────────────
 function renderMy(){
-  const c=document.getElementById('my-content');
-  if(!cu.id){c.innerHTML=`<div class="mcard"><div class="alert a-inf"><i class="ti ti-info-circle"></i>Not registered yet. Use the Register tab to join or create a group.</div></div>`;return}
-  const g=groups.find(gr=>gr.id===cu.groupId);
-  if(!g){c.innerHTML=`<div class="mcard"><div class="alert a-wrn"><i class="ti ti-alert-triangle"></i>Your group was deleted or doesn't exist.</div></div>`;return}
+  const el=document.getElementById('my');
+  if(!user.id){
+    el.innerHTML=`<div class="mycard"><div class="alert al-in" style="margin-bottom:1.25rem">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+      You haven't registered yet. Browse groups to join one, or create your own.</div>
+      <div style="text-align:center;padding:2rem 0;color:var(--muted)">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" style="opacity:.2;margin:0 auto 10px;display:block"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <p style="font-size:14px">No registration found</p></div></div>`;
+    return;
+  }
+  const g=groups.find(gr=>gr.id===user.groupId);
+  if(!g){
+    el.innerHTML=`<div class="mycard"><div class="alert al-wa">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      Your group was deleted. Please join or create a new one.</div>
+      <button class="btn" style="margin-top:10px" onclick="saveUser({});renderMy()">Clear session</button></div>`;
+    return;
+  }
   const full=g.members.length>=g.max;
   const slots=Array.from({length:g.max},(_,i)=>`<div class="slot${i<g.members.length?' on':''}"></div>`).join('');
-  const rows=g.members.map(m=>`<div class="mrow">
-    <div class="av av${avc(m.name)}">${ini(m.name)}</div>
-    <div style="flex:1;min-width:0"><div class="mn">${m.name} ${m.ldr?'<span class="badge b-ldr" style="font-size:10px;padding:1px 5px">Leader</span>':''} ${m.id===cu.id?'<span class="badge b-me" style="font-size:10px;padding:1px 5px">You</span>':''}</div><div class="mid">${m.id}</div></div>
-  </div>`).join('');
-  c.innerHTML=`<div class="mcard">
-    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px">
-      <div style="font-size:18px;font-weight:500">${g.name}</div>
-      <span class="badge ${full?'b-full':'b-open'}">${g.members.length}/${g.max} · ${full?'Full':'Open'}</span>
+  const rows=g.members.map(m=>`
+    <div class="mrow">
+      <div class="av av${avc(m.name)}">${ini(m.name)}</div>
+      <div class="mi">
+        <div class="mn">${m.name}${m.id===user.id?' <span class="badge b-you" style="font-size:11px;padding:2px 7px;margin-left:4px">You</span>':''}</div>
+        <div class="mid">${m.id} · ${m.email}</div>
+      </div>
+    </div>`).join('');
+  el.innerHTML=`<div class="mycard">
+    <div class="mytitle">${g.name}</div>
+    <div class="mysub">${g.topic||'No course'}${g.desc?' · '+g.desc:''}</div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:7px">
+      <div class="sl-lbl">${g.members.length} / ${g.max} members</div>
+      <span class="badge ${full?'b-full':'b-open'}">${full?'Full':'Open'}</span>
     </div>
-    <div class="review" style="margin-bottom:1rem">
-      <div class="rr"><span class="rk">Your name</span><span class="rv">${cu.name}</span></div>
-      <div class="rr"><span class="rk">Student ID</span><span class="rv" style="font-family:var(--font-mono);font-size:12px">${cu.id}</span></div>
-      ${cu.email?`<div class="rr"><span class="rk">Email</span><span class="rv">${cu.email}</span></div>`:''}
-      <div class="rr"><span class="rk">Role</span><span class="rv">${g.members.find(m=>m.id===cu.id)?.ldr?'Leader':'Member'}</span></div>
-    </div>
-    <div class="sec-lbl">Members</div>
-    <div class="slots" style="margin-bottom:8px">${slots}</div>
-    <div class="mlist" style="margin-bottom:1rem">${rows}</div>
-    <hr class="div"/>
-    <div style="display:flex;gap:8px;flex-wrap:wrap">
-      <button style="background:#FCEBEB;color:#791F1F;border-color:#F09595" onclick="leaveGroup()"><i class="ti ti-logout" aria-hidden="true"></i> Leave group</button>
-      <button style="background:#FCEBEB;color:#791F1F;border-color:#F09595" onclick="openDelModal('${g.id}')"><i class="ti ti-trash" aria-hidden="true"></i> Delete group</button>
+    <div class="slots" style="margin-bottom:1.1rem">${slots}</div>
+    <hr class="divider" style="margin:0 0 .9rem"/>
+    <div class="slbl">Members</div>
+    <div class="mlist" style="margin-bottom:1.1rem">${rows}</div>
+    <hr class="divider"/>
+    <div class="brow">
+      <button class="btn btn-d" onclick="leaveGroup()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="14" x2="14" y2="14"/></svg>
+        Leave group
+      </button>
+      <button class="btn btn-a" onclick="openDel('${g.id}')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M9 6V4h6v2"/></svg>
+        Delete group
+      </button>
     </div>
   </div>`;
 }
 
-function goTab(t,btn){
-  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+// ── TABS ───────────────────────────────────────────────────────
+function goTab(tab,btn){
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('on'));
   document.querySelectorAll('.sec').forEach(s=>s.classList.remove('on'));
-  btn.classList.add('active');
-  document.getElementById('tab-'+t).classList.add('on');
-  if(t==='browse')renderGroups();
-  if(t==='my')renderMy();
-  if(t==='sheet')renderSheet();
-  if(t==='register')populateJoinSel();
+  btn.classList.add('on');
+  document.getElementById('tab-'+tab).classList.add('on');
+  if(tab==='browse') renderGroups();
+  if(tab==='my') renderMy();
 }
 
-function showAlert(msg,cls='a-ok'){
-  const ic={['a-ok']:'ti-circle-check',['a-err']:'ti-alert-circle',['a-inf']:'ti-info-circle',['a-wrn']:'ti-alert-triangle'};
-  const b=document.getElementById('alert-box');
-  b.innerHTML=`<div class="alert ${cls}"><i class="ti ${ic[cls]||'ti-info-circle'}"></i>${msg}</div>`;
-  setTimeout(()=>{b.innerHTML=''},5000);
+// ── ALERT ──────────────────────────────────────────────────────
+function toast(msg,t='ok'){
+  const ic={ok:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>`,
+    er:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`,
+    in:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>`,
+    wa:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`};
+  const cls={ok:'al-ok',er:'al-er',in:'al-in',wa:'al-wa'};
+  document.getElementById('abox').innerHTML=`<div class="alert ${cls[t]}">${ic[t]||''} ${msg}</div>`;
+  setTimeout(()=>document.getElementById('abox').innerHTML='',5000);
 }
 
-function populateJoinSel(){
-  const s=document.getElementById('join-sel');
-  const open=groups.filter(g=>g.members.length<g.max);
-  s.innerHTML=open.length
-    ?'<option value="">— Select a group —</option>'+open.map(g=>`<option value="${g.id}">${g.name} (${g.members.length}/${g.max} members)</option>`).join('')
-    :'<option value="">No open groups available</option>';
+// ── CREATE GROUP ───────────────────────────────────────────────
+async function createGroup(){
+  const name=document.getElementById('cn').value.trim();
+  const sid=document.getElementById('ci').value.trim();
+  const email=document.getElementById('ce').value.trim();
+  const gname=document.getElementById('gn').value.trim();
+  const topic=document.getElementById('gt').value.trim();
+  const desc=document.getElementById('gd').value.trim();
+  const max=parseInt(document.getElementById('gm').value);
+  if(!name||!sid||!email||!gname){toast('Please fill in all required fields (*).','er');return;}
+  if(user.groupId){toast('You are already registered in a group.','er');return;}
+  if(groups.some(g=>g.members.some(m=>m.id===sid))){toast('This student ID is already registered.','er');return;}
+  const btn=document.getElementById('cbtn');
+  btn.disabled=true;btn.textContent='Creating…';
+  const payload={name:gname,topic,desc,max,members:[{name,id:sid,email}],
+    createdAt:fbOK?firebase.firestore.FieldValue.serverTimestamp():new Date()};
+  try{
+    let gid;
+    if(fbOK){const ref=await db.collection('groups').add(payload);gid=ref.id;}
+    else{gid='demo_'+Date.now();groups.unshift({...payload,id:gid,ts:Date.now()});renderGroups();}
+    saveUser({name,id:sid,email,groupId:gid});
+    ['cn','ci','ce','gn','gt','gd'].forEach(i=>document.getElementById(i).value='');
+    toast(`"${gname}" created! You've been registered as group leader.`);
+    document.querySelectorAll('.tab')[2].click();
+    renderMy();
+  }catch(e){console.error(e);toast('Failed to create group. Check Firebase connection.','er');}
+  finally{btn.disabled=false;btn.innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg> Create group &amp; register me`;}
 }
 
-function toggleAction(){
-  const v=document.getElementById('cr-action').value;
-  document.getElementById('join-fields').style.display=v==='join'?'block':'none';
-  document.getElementById('create-fields').style.display=v==='create'?'block':'none';
+// ── JOIN ───────────────────────────────────────────────────────
+function openJoin(gid){
+  joinId=gid;const g=groups.find(gr=>gr.id===gid);
+  document.getElementById('jsub').textContent=`Joining: ${g.name} · ${g.members.length}/${g.max} members`;
+  if(user.name) document.getElementById('jn').value=user.name;
+  if(user.id)   document.getElementById('ji').value=user.id;
+  if(user.email)document.getElementById('je').value=user.email;
+  document.getElementById('jmod').classList.add('on');
+}
+async function confirmJoin(){
+  const name=document.getElementById('jn').value.trim();
+  const sid=document.getElementById('ji').value.trim();
+  const email=document.getElementById('je').value.trim();
+  if(!name||!sid||!email){toast('Please fill in all fields.','er');return;}
+  const g=groups.find(gr=>gr.id===joinId);
+  if(!g){closeM('jmod');return;}
+  if(g.members.length>=g.max){toast('This group is now full.','er');closeM('jmod');return;}
+  if(g.members.some(m=>m.id===sid)){toast('Student ID already in this group.','er');return;}
+  if(groups.some(gr=>gr.members.some(m=>m.id===sid))){toast('Student ID already in another group.','er');return;}
+  const btn=document.getElementById('jbtn');btn.disabled=true;btn.textContent='Joining…';
+  try{
+    if(fbOK) await db.collection('groups').doc(joinId).update({members:firebase.firestore.FieldValue.arrayUnion({name,id:sid,email})});
+    else{g.members.push({name,id:sid,email});renderGroups();}
+    saveUser({name,id:sid,email,groupId:joinId});
+    closeM('jmod');toast(`You've joined "${g.name}" — welcome!`);
+  }catch(e){console.error(e);toast('Failed to join. Try again.','er');}
+  finally{btn.disabled=false;btn.innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg> Confirm &amp; join`;}
 }
 
-function goStep(n){
-  if(n===2){
-    const nm=document.getElementById('cr-name').value.trim();
-    const sid=document.getElementById('cr-id').value.trim();
-    const em=document.getElementById('cr-email').value.trim();
-    if(!nm||!sid||!em){showAlert('Please fill in all fields.','a-err');return}
-    if(allIds().has(sid)&&!cu.id){showAlert('This student ID is already registered.','a-err');return}
-    if(cu.groupId&&groups.find(g=>g.id===cu.groupId)){showAlert('You are already in a group.','a-err');return}
-    populateJoinSel();
-  }
-  if(n===3){
-    const act=document.getElementById('cr-action').value;
-    if(act==='join'){if(!document.getElementById('join-sel').value){showAlert('Please select a group.','a-err');return}}
-    else{if(!document.getElementById('gr-name').value.trim()){showAlert('Please enter a group name.','a-err');return}}
-    buildReview();
-  }
-  cstep=n;
-  ['step1','step2','step3'].forEach((id,i)=>document.getElementById(id).style.display=i+1===n?'block':'none');
-  document.querySelectorAll('.sd').forEach((d,i)=>{d.classList.remove('act','done');if(i+1<n)d.classList.add('done');if(i+1===n)d.classList.add('act')});
-}
-
-function buildReview(){
-  const nm=document.getElementById('cr-name').value.trim();
-  const sid=document.getElementById('cr-id').value.trim();
-  const em=document.getElementById('cr-email').value.trim();
-  const act=document.getElementById('cr-action').value;
-  let h=`<div class="rr"><span class="rk">Name</span><span class="rv">${nm}</span></div>`;
-  h+=`<div class="rr"><span class="rk">Student ID</span><span class="rv" style="font-family:var(--font-mono);font-size:12px">${sid}</span></div>`;
-  h+=`<div class="rr"><span class="rk">Email</span><span class="rv">${em}</span></div>`;
-  if(act==='join'){
-    const sel=document.getElementById('join-sel');
-    h+=`<div class="rr"><span class="rk">Action</span><span class="rv">Join existing group</span></div>`;
-    h+=`<div class="rr"><span class="rk">Group</span><span class="rv">${sel.options[sel.selectedIndex]?.text||''}</span></div>`;
-  } else {
-    h+=`<div class="rr"><span class="rk">Action</span><span class="rv">Create new group</span></div>`;
-    h+=`<div class="rr"><span class="rk">Group name</span><span class="rv">${document.getElementById('gr-name').value.trim()}</span></div>`;
-    h+=`<div class="rr"><span class="rk">Max size</span><span class="rv">${document.getElementById('gr-max').value} members</span></div>`;
-  }
-  document.getElementById('review-box').innerHTML=h;
-}
-
-async function submitForm(){
-  const btn=document.getElementById('sub-btn');
-  btn.disabled=true;btn.innerHTML='<span class="spin"></span>Submitting…';
-  const nm=document.getElementById('cr-name').value.trim();
-  const sid=document.getElementById('cr-id').value.trim();
-  const em=document.getElementById('cr-email').value.trim();
-  const act=document.getElementById('cr-action').value;
-  await loadData();
-  if(allIds().has(sid)){showAlert('Student ID already registered.','a-err');btn.disabled=false;btn.innerHTML='<i class="ti ti-send"></i> Submit response';return}
-  if(act==='create'){
-    const gn=document.getElementById('gr-name').value.trim();
-    const mx=parseInt(document.getElementById('gr-max').value);
-    if(groups.some(g=>g.name.toLowerCase()===gn.toLowerCase())){showAlert('A group with that name already exists.','a-err');btn.disabled=false;btn.innerHTML='<i class="ti ti-send"></i> Submit response';return}
-    const g={id:uid(),name:gn,max:mx,ts:Date.now(),members:[{name:nm,id:sid,ldr:true}]};
-    groups.unshift(g);
-    saveU({name:nm,id:sid,email:em,groupId:g.id});
-    await persist();
-    showAlert(`Group "${gn}" created!`);
-  } else {
-    const gid=document.getElementById('join-sel').value;
-    const g=groups.find(gr=>gr.id===gid);
-    if(!g||g.members.length>=g.max){showAlert('Group is now full or unavailable.','a-err');btn.disabled=false;btn.innerHTML='<i class="ti ti-send"></i> Submit response';return}
-    g.members.push({name:nm,id:sid});
-    saveU({name:nm,id:sid,email:em,groupId:g.id});
-    await persist();
-    showAlert(`Joined "${g.name}"!`);
-  }
-  ['cr-name','cr-id','cr-email','gr-name'].forEach(id=>document.getElementById(id).value='');
-  goStep(1);btn.disabled=false;btn.innerHTML='<i class="ti ti-send"></i> Submit response';
-  updateStats();renderGroups();renderSheet();renderMy();
-  document.querySelectorAll('.tab')[2].click();
-}
-
-async function quickJoin(gid){
-  const nm=prompt('Your full name:');if(!nm||!nm.trim())return;
-  const sid=prompt('Your Student ID:');if(!sid||!sid.trim())return;
-  if(allIds().has(sid.trim())){showAlert('Student ID already registered.','a-err');return}
-  const g=groups.find(gr=>gr.id===gid);
-  if(!g||g.members.length>=g.max){showAlert('Group full.','a-err');return}
-  g.members.push({name:nm.trim(),id:sid.trim()});
-  saveU({name:nm.trim(),id:sid.trim(),groupId:g.id});
-  await persist();
-  showAlert(`Joined "${g.name}"!`);
-  updateStats();renderGroups();renderSheet();renderMy();
-}
-
+// ── LEAVE ──────────────────────────────────────────────────────
 async function leaveGroup(){
-  if(!confirm('Leave your group?'))return;
-  const g=groups.find(gr=>gr.id===cu.groupId);
-  if(g){
-    g.members=g.members.filter(m=>m.id!==cu.id);
-    if(!g.members.length)groups=groups.filter(gr=>gr.id!==g.id);
-    await persist();
+  const g=groups.find(gr=>gr.id===user.groupId);
+  if(!g){saveUser({});renderMy();return;}
+  try{
+    if(fbOK){
+      const rem=g.members.filter(m=>m.id!==user.id);
+      if(rem.length===0) await db.collection('groups').doc(g.id).delete();
+      else await db.collection('groups').doc(g.id).update({members:rem});
+    }else{
+      g.members=g.members.filter(m=>m.id!==user.id);
+      if(!g.members.length) groups=groups.filter(gr=>gr.id!==g.id);
+      renderGroups();
+    }
+    saveUser({});toast('You have left the group.','in');renderMy();
+  }catch(e){console.error(e);toast('Failed to leave group.','er');}
+}
+
+// ── DELETE ─────────────────────────────────────────────────────
+function openDel(gid){
+  delId=gid;const g=groups.find(gr=>gr.id===gid);
+  document.getElementById('dsub').textContent=`"${g.name}" has ${g.members.length} member${g.members.length!==1?'s':''}.`;
+  document.getElementById('dmod').classList.add('on');
+}
+async function confirmDelete(){
+  const g=groups.find(gr=>gr.id===delId);
+  if(!g){closeM('dmod');return;}
+  const btn=document.getElementById('dbtn');btn.disabled=true;btn.textContent='Deleting…';
+  try{
+    if(fbOK) await db.collection('groups').doc(delId).delete();
+    else{groups=groups.filter(gr=>gr.id!==delId);renderGroups();}
+    if(user.groupId===delId) saveUser({});
+    closeM('dmod');toast(`Group "${g.name}" deleted.`,'in');refresh();
+  }catch(e){console.error(e);toast('Failed to delete group.','er');}
+  finally{btn.disabled=false;btn.innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M9 6V4h6v2"/></svg> Yes, delete group`;}
+}
+
+// ── MODAL HELPERS ──────────────────────────────────────────────
+function closeM(id){
+  document.getElementById(id).classList.remove('on');
+  if(id==='jmod') joinId=null;
+  if(id==='dmod') delId=null;
+  if(id==='imod'){pendingImport=[];document.getElementById('xl-file-input').value='';}
+}
+document.querySelectorAll('.moverlay').forEach(el=>{
+  el.addEventListener('click',function(e){if(e.target===this)this.classList.remove('on');});
+});
+
+// ═══════════════════════════════════════════════════════════════
+//  EXCEL IMPORT / EXPORT
+// ═══════════════════════════════════════════════════════════════
+
+// ── Converts a group object → flat spreadsheet row ────────────
+function groupToRow(g){
+  const m=g.members||[];
+  // First member = leader
+  const leader = m[0]||{};
+  const extras = m.slice(1);   // members 1–5
+  const row=[g.name||'', leader.name||'', leader.id||''];
+  for(let i=0;i<6;i++){
+    const mem=extras[i]||{};
+    row.push(mem.name||'', mem.id||'');
   }
-  saveU({});
-  showAlert('You left the group.','a-inf');
-  updateStats();renderGroups();renderSheet();renderMy();
+  return row;
 }
 
-function openDelModal(gid){
-  delGid=gid;
-  const g=groups.find(gr=>gr.id===gid);
-  document.getElementById('del-msub').textContent=`Delete "${g.name}"? This removes all ${g.members.length} member${g.members.length!==1?'s':''} and cannot be undone.`;
-  document.getElementById('del-input').value='';
-  document.getElementById('del-wrap').classList.add('open');
-}
-function closeDelModal(){document.getElementById('del-wrap').classList.remove('open');delGid=null}
+// ── Converts a flat spreadsheet row → group object ────────────
+function rowToGroup(row){
+  const get=(i)=>(row[i]||'').toString().trim();
+  const groupName=get(0);
+  if(!groupName) return null;
 
-async function confirmDel(){
-  const g=groups.find(gr=>gr.id===delGid);
-  if(!g){closeDelModal();return}
-  if(document.getElementById('del-input').value.trim()!==g.name){showAlert(`Type exact name: "${g.name}"`, 'a-err');return}
-  const gn=g.name;
-  groups=groups.filter(gr=>gr.id!==g.id);
-  if(cu.groupId===delGid)saveU({});
-  await persist();
-  closeDelModal();
-  showAlert(`"${gn}" deleted.`,'a-inf');
-  updateStats();renderGroups();renderSheet();renderMy();
+  const members=[];
+  // Leader (cols 1–2)
+  if(get(1)) members.push({name:get(1), id:get(2), email:''});
+  // Members 1–6 (cols 3–14, pairs)
+  for(let i=0;i<6;i++){
+    const base=3+i*2;
+    if(get(base)) members.push({name:get(base), id:get(base+1), email:''});
+  }
+
+  return {
+    name:groupName,
+    topic:'',
+    desc:'',
+    max: members.length<=5?5:6,
+    members,
+    createdAt: fbOK?firebase.firestore.FieldValue.serverTimestamp():new Date()
+  };
 }
 
-loadData();
+// ── EXPORT: groups → Excel ─────────────────────────────────────
+function exportExcel(){
+  if(!groups.length){toast('No groups to export yet.','wa');return;}
+
+  const wb=XLSX.utils.book_new();
+
+  // Sheet 1: Group Registration
+  const wsData=[XL_HEADERS, ...groups.map(groupToRow)];
+  const ws=XLSX.utils.aoa_to_sheet(wsData);
+
+  // Column widths
+  ws['!cols']=[{wch:20},...Array(14).fill(null).map((_,i)=>({wch:i%2===0?24:16}))];
+
+  XLSX.utils.book_append_sheet(wb,ws,'Group Registration');
+
+  // Sheet 2: Summary (static snapshot)
+  const summary=[
+    ['GroupSync — Assignment Group Registration'],
+    [''],
+    ['Exported on', new Date().toLocaleString()],
+    ['Total Groups', groups.length],
+    ['Total Students', groups.reduce((a,g)=>a+g.members.length,0)],
+    ['Open Groups', groups.filter(g=>g.members.length<g.max).length],
+    ['Full Groups', groups.filter(g=>g.members.length>=g.max).length],
+  ];
+  const ws2=XLSX.utils.aoa_to_sheet(summary);
+  ws2['!cols']=[{wch:25},{wch:20}];
+  XLSX.utils.book_append_sheet(wb,ws2,'Summary');
+
+  XLSX.writeFile(wb,`GroupSync_Export_${new Date().toISOString().slice(0,10)}.xlsx`);
+  toast(`Exported ${groups.length} group${groups.length!==1?'s':''} to Excel.`);
+}
+
+// ── DOWNLOAD BLANK TEMPLATE ────────────────────────────────────
+function downloadTemplate(){
+  const wb=XLSX.utils.book_new();
+  // Headers + 10 blank rows
+  const data=[XL_HEADERS,...Array(10).fill(Array(15).fill(''))];
+  const ws=XLSX.utils.aoa_to_sheet(data);
+  ws['!cols']=[{wch:20},...Array(14).fill(null).map((_,i)=>({wch:i%2===0?24:16}))];
+  XLSX.utils.book_append_sheet(wb,ws,'Group Registration');
+  XLSX.writeFile(wb,'GroupSync_Template.xlsx');
+  toast('Blank template downloaded.','in');
+}
+
+// ── IMPORT: Excel → preview modal ─────────────────────────────
+function importExcel(input){
+  const file=input.files[0];
+  if(!file) return;
+  const reader=new FileReader();
+  reader.onload=function(e){
+    try{
+      const wb=XLSX.read(e.target.result,{type:'array'});
+      // Find the registration sheet (first sheet, or named "Group Registration")
+      const sheetName=wb.SheetNames.includes('Group Registration')?'Group Registration':wb.SheetNames[0];
+      const ws=wb.Sheets[sheetName];
+      const raw=XLSX.utils.sheet_to_json(ws,{header:1,defval:''});
+
+      if(!raw.length){toast('The spreadsheet appears to be empty.','er');return;}
+
+      // Find header row (first row containing "Group Name")
+      let headerRow=-1;
+      for(let i=0;i<Math.min(raw.length,5);i++){
+        if((raw[i]||[]).some(c=>(c||'').toString().toLowerCase().includes('group name'))){headerRow=i;break;}
+      }
+      if(headerRow===-1){toast('Could not find the header row. Make sure the file uses the correct template.','er');return;}
+
+      const dataRows=raw.slice(headerRow+1).filter(r=>r.some(c=>(c||'').toString().trim()!==''));
+
+      if(!dataRows.length){toast('No data rows found in the spreadsheet.','wa');return;}
+
+      // Parse each row
+      const parsed=dataRows.map(rowToGroup).filter(Boolean);
+      if(!parsed.length){toast('No valid groups found. Make sure "Group Name" column is filled.','er');return;}
+
+      // Detect duplicates with existing data
+      const existingIds=new Set(groups.flatMap(g=>g.members.map(m=>m.id)));
+      const existingNames=new Set(groups.map(g=>g.name.toLowerCase()));
+      let dupWarnings=[];
+      parsed.forEach(g=>{
+        if(existingNames.has(g.name.toLowerCase())) dupWarnings.push(`Group name "${g.name}" already exists`);
+        g.members.forEach(m=>{ if(m.id&&existingIds.has(m.id)) dupWarnings.push(`Student ID ${m.id} already registered`);});
+      });
+
+      // Build preview table
+      pendingImport=parsed;
+      const previewRows=parsed.map(g=>{
+        const leader=g.members[0]||{};
+        const extras=g.members.slice(1);
+        return `<tr>
+          <td><strong>${g.name}</strong></td>
+          <td>${leader.name||'—'} <span style="color:var(--muted);font-size:11px">${leader.id||''}</span></td>
+          <td>${extras.map(m=>`${m.name} <span style="color:var(--muted);font-size:11px">(${m.id})</span>`).join('<br>')||'—'}</td>
+          <td style="text-align:center">${g.members.length}</td>
+        </tr>`;
+      }).join('');
+
+      document.getElementById('isub').textContent=`${parsed.length} group${parsed.length!==1?'s':''} found in "${file.name}"`;
+      document.getElementById('preview-wrap').innerHTML=`
+        <table class="preview-table">
+          <thead><tr><th>Group Name</th><th>Leader</th><th>Members</th><th>Total</th></tr></thead>
+          <tbody>${previewRows}</tbody>
+        </table>`;
+
+      if(dupWarnings.length){
+        document.getElementById('import-warn').style.display='flex';
+        document.getElementById('import-warn-txt').textContent=
+          `⚠ Potential conflicts: ${dupWarnings.slice(0,3).join('; ')}${dupWarnings.length>3?` (+${dupWarnings.length-3} more)`:''}. These rows will still be imported.`;
+      }else{
+        document.getElementById('import-warn').style.display='none';
+      }
+      document.getElementById('imod').classList.add('on');
+    }catch(err){
+      console.error(err);toast('Failed to read the Excel file. Make sure it is a valid .xlsx file.','er');
+    }
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+// ── CONFIRM IMPORT ─────────────────────────────────────────────
+async function confirmImport(){
+  if(!pendingImport.length) return;
+  const btn=document.getElementById('ibtn');btn.disabled=true;btn.textContent='Importing…';
+  let added=0,failed=0;
+  try{
+    if(fbOK){
+      // Write each group as a Firestore document
+      const batch=db.batch();
+      pendingImport.forEach(g=>{
+        const ref=db.collection('groups').doc();
+        batch.set(ref,{...g,createdAt:firebase.firestore.FieldValue.serverTimestamp()});
+      });
+      await batch.commit();
+      // onSnapshot will update the UI automatically
+    }else{
+      // Demo mode: push into local array
+      pendingImport.forEach(g=>{
+        groups.unshift({...g,id:'imp_'+Date.now()+Math.random(),ts:Date.now()});
+      });
+      renderGroups();
+    }
+    added=pendingImport.length;
+    closeM('imod');
+    toast(`Successfully imported ${added} group${added!==1?'s':''}!`);
+    refresh();
+  }catch(e){
+    console.error(e);failed=pendingImport.length;
+    toast(`Import failed. ${failed} group${failed!==1?'s':''} not saved.`,'er');
+  }finally{
+    btn.disabled=false;
+    btn.innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg> Import all groups`;
+  }
+}
 </script>
+
+
+</body></html>
